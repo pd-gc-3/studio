@@ -63,7 +63,7 @@ export function ThreadList({
             )}>
               Last message {formatDistanceToNow(new Date(thread.updatedAt), { addSuffix: true })}
             </p>
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 transition-opacity">
                <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button variant="ghost" size="icon" className="h-8 w-8" onClick={(e) => e.stopPropagation()}>
@@ -99,7 +99,7 @@ export function ThreadList({
           <Button
             variant='ghost'
             className={cn(
-              "h-10 w-full justify-start gap-2 truncate pl-2",
+              "h-10 w-full justify-start gap-2 truncate pl-2 pr-10",
               activeThreadId === thread.id && "bg-primary text-primary-foreground hover:bg-primary/90"
             )}
             onClick={() => onSelectThread(thread)}
@@ -107,7 +107,7 @@ export function ThreadList({
             <MessageSquare className="h-4 w-4 flex-shrink-0" />
             <span className="flex-1 truncate text-left">{thread.threadTitle}</span>
           </Button>
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 transition-opacity">
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-8 w-8">
