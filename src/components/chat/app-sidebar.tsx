@@ -193,20 +193,12 @@ export function AppSidebar({
                     You have {threads.length} previous chat{threads.length !== 1 ? 's' : ''}.
                   </p>
                   <ScrollArea className="h-[50vh]">
-                    <div className="space-y-3 p-1">
-                      {filteredThreads.map((thread) => (
-                        <div
-                          key={thread.id}
-                          onClick={() => handleSelectThreadFromDialog(thread)}
-                          className="group relative cursor-pointer rounded-lg border p-4 transition-colors hover:bg-muted"
-                        >
-                          <h3 className="font-semibold truncate pr-8">{thread.threadTitle}</h3>
-                          <p className="text-sm text-muted-foreground">
-                            Last message {formatDistanceToNow(new Date(thread.updatedAt), { addSuffix: true })}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
+                    <ThreadList
+                      threads={filteredThreads}
+                      onSelectThread={handleSelectThreadFromDialog}
+                      onDeleteThread={onDeleteThread}
+                      isDialogMode={true}
+                    />
                   </ScrollArea>
                 </div>
               </DialogContent>
@@ -318,7 +310,7 @@ export function AppSidebar({
               <PanelLeft />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-[300px] p-0 bg-muted">
+          <SheetContent side="left" className="w-[260px] p-0 bg-muted">
             <SheetHeader className="sr-only">
               <SheetTitle>Menu</SheetTitle>
             </SheetHeader>
@@ -329,7 +321,7 @@ export function AppSidebar({
 
       <aside
         className={`hidden md:flex flex-col h-screen transition-all duration-300 ease-in-out border-r bg-card flex-shrink-0 ${
-          isOpen ? 'w-72' : 'w-20'
+          isOpen ? 'w-64' : 'w-20'
         }`}
       >
         {SidebarDesktopContent}
