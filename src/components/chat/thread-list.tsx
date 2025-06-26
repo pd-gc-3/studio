@@ -14,12 +14,14 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { formatDistanceToNow } from 'date-fns';
 
 interface ThreadListProps {
   threads: Thread[];
   activeThreadId?: string;
   onSelectThread: (thread: Thread) => void;
   onDeleteThread: (threadId: string) => void;
+  isDialogMode?: boolean;
 }
 
 export function ThreadList({
@@ -27,11 +29,54 @@ export function ThreadList({
   activeThreadId,
   onSelectThread,
   onDeleteThread,
+  isDialogMode = false,
 }: ThreadListProps) {
   if (threads.length === 0) {
     return (
       <div className="p-4 text-center text-sm text-muted-foreground">
         No threads yet.
+      </div>
+    );
+  }
+
+  if (isDialogMode) {
+    return (
+      <div className="space-y-3 p-1">
+        {threads.map((thread) => (
+          <div
+            key={thread.id}
+            onClick={() => onSelectThread(thread)}
+            className="group relative cursor-pointer rounded-lg border p-4 transition-colors hover:bg-muted"
+          >
+            <h3 className="font-semibold truncate pr-8">{thread.threadTitle}</h3>
+            <p className="text-sm text-muted-foreground">
+              Last message {formatDistanceToNow(new Date(thread.updatedAt), { addSuffix: true })}
+            </p>
+            <div className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
+               <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={(e) => e.stopPropagation()}>
+                    <Trash2 className="h-4 w-4 text-muted-foreground" />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This will permanently delete the thread "{thread.threadTitle}". This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => onDeleteThread(thread.id)}>
+                      Delete
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          </div>
+        ))}
       </div>
     );
   }

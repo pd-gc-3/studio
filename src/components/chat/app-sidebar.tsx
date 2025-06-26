@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Plus, LogOut, PanelLeft, MessageSquare, Sun, Moon } from 'lucide-react';
+import { Plus, LogOut, PanelLeft, MessageSquare, Sun, Moon, Search } from 'lucide-react';
 import { signOut } from '@/lib/firebase/auth';
 import type { User, Thread } from '@/lib/types';
 import { Button } from '@/components/ui/button';
@@ -38,6 +38,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useTheme } from "next-themes";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 
 interface AppSidebarProps {
@@ -63,6 +70,7 @@ export function AppSidebar({
 }: AppSidebarProps) {
   const { setTheme } = useTheme();
   const [search, setSearch] = React.useState('');
+  const [isHistoryOpen, setIsHistoryOpen] = React.useState(false);
   const searchInputRef = React.useRef<HTMLInputElement>(null);
 
   const filteredThreads = threads.filter((thread) =>
@@ -71,6 +79,16 @@ export function AppSidebar({
   
   const handleNewChat = () => {
     onNewChat();
+  }
+
+  const handleNewChatFromDialog = () => {
+    onNewChat();
+    setIsHistoryOpen(false);
+  }
+
+  const handleSelectThreadFromDialog = (thread: Thread) => {
+    onSelectThread(thread);
+    setIsHistoryOpen(false);
   }
 
   const SidebarDesktopContent = (
@@ -147,14 +165,53 @@ export function AppSidebar({
               </TooltipTrigger>
               <TooltipContent side="right"><p>New Chat</p></TooltipContent>
             </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" onClick={() => setIsOpen(true)}>
-                  <MessageSquare className="h-5 w-5" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right"><p>Chats</p></TooltipContent>
-            </Tooltip>
+
+            <Dialog open={isHistoryOpen} onOpenChange={setIsHistoryOpen}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <DialogTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                      <MessageSquare className="h-5 w-5"/>
+                    </Button>
+                  </DialogTrigger>
+                </TooltipTrigger>
+                <TooltipContent side="right"><p>Chats</p></TooltipContent>
+              </Tooltip>
+              <DialogContent className="max-w-2xl bg-card">
+                <DialogHeader>
+                  <DialogTitle className="flex items-center justify-between">
+                    <span className="text-xl font-bold font-headline">Your chat history</span>
+                    <Button onClick={handleNewChatFromDialog} size="sm" variant="outline">
+                      <Plus className="mr-2 h-4 w-4" />
+                      New chat
+                    </Button>
+                  </DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder="Search your chats..."
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    You have {threads.length} previous chat{threads.length !== 1 ? 's' : ''}.
+                  </p>
+                  <ScrollArea className="h-[50vh]">
+                    <ThreadList
+                      threads={filteredThreads}
+                      activeThreadId={activeThreadId}
+                      onSelectThread={handleSelectThreadFromDialog}
+                      onDeleteThread={onDeleteThread}
+                      isDialogMode={true}
+                    />
+                  </ScrollArea>
+                </div>
+              </DialogContent>
+            </Dialog>
           </TooltipProvider>
 
           <div className="flex-1"></div>
