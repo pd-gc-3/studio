@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Plus, LogOut, PanelLeft, Search, MessageSquare, Sun, Moon, X } from 'lucide-react';
+import { Plus, LogOut, PanelLeft, MessageSquare, Sun, Moon } from 'lucide-react';
 import { signOut } from '@/lib/firebase/auth';
 import type { User, Thread } from '@/lib/types';
 import { Button } from '@/components/ui/button';
@@ -69,16 +69,9 @@ export function AppSidebar({
     thread.threadTitle.toLowerCase().includes(search.toLowerCase())
   );
   
-  const handleSearchClick = () => {
-    if (!isOpen) {
-      setIsOpen(true);
-      setTimeout(() => {
-        searchInputRef.current?.focus();
-      }, 300); // Wait for animation
-    } else {
-      searchInputRef.current?.focus();
-    }
-  };
+  const handleNewChat = () => {
+    onNewChat();
+  }
 
   const SidebarDesktopContent = (
     <div className="flex h-full flex-col">
@@ -148,19 +141,11 @@ export function AppSidebar({
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="default" size="icon" className="rounded-full h-10 w-10 bg-primary" onClick={onNewChat}>
+                <Button variant="default" size="icon" className="rounded-full h-10 w-10 bg-primary" onClick={handleNewChat}>
                   <Plus className="h-5 w-5"/>
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right"><p>New Chat</p></TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" onClick={handleSearchClick}>
-                  <Search className="h-5 w-5"/>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="right"><p>Search Chats</p></TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
