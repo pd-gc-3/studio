@@ -83,10 +83,29 @@ export function AuthForm({ mode }: AuthFormProps) {
       }
       router.push('/');
     } catch (error: any) {
+      let description = 'An unexpected error occurred. Please try again.';
+      if (error.code) {
+        switch (error.code) {
+          case 'auth/configuration-not-found':
+            description =
+              'Email/Password sign-in is not enabled. Please enable it in your Firebase console.';
+            break;
+          case 'auth/invalid-credential':
+          case 'auth/wrong-password':
+          case 'auth/user-not-found':
+            description = 'Invalid email or password. Please check your credentials and try again.';
+            break;
+          case 'auth/email-already-in-use':
+            description = 'This email is already in use. Please try logging in or use a different email.';
+            break;
+          default:
+            description = error.message;
+        }
+      }
       toast({
         variant: 'destructive',
         title: 'Authentication Failed',
-        description: error.message || 'An unexpected error occurred.',
+        description,
       });
     } finally {
       setIsLoading(false);
@@ -100,10 +119,23 @@ export function AuthForm({ mode }: AuthFormProps) {
       toast({ title: 'Signed in successfully!', description: 'Welcome!' });
       router.push('/');
     } catch (error: any) {
+      let description = 'Could not sign in with Google. Please try again.';
+      if (error.code) {
+        switch (error.code) {
+          case 'auth/popup-closed-by-user':
+            description = 'The sign-in popup was closed before completing the sign-in. Please try again.';
+            break;
+          case 'auth/account-exists-with-different-credential':
+             description = 'An account already exists with this email. Please sign in using the original method.';
+             break;
+          default:
+            description = error.message;
+        }
+      }
       toast({
         variant: 'destructive',
         title: 'Google Sign-In Failed',
-        description: error.message || 'Could not sign in with Google.',
+        description,
       });
     } finally {
       setIsGoogleLoading(false);
