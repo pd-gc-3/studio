@@ -136,8 +136,8 @@ export function AppSidebar({
           <TooltipProvider delayDuration={0}>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant="default" size="icon" className="rounded-full h-12 w-12 bg-primary" onClick={onNewChat}>
-                  <Plus className="h-6 w-6"/>
+                <Button variant="default" size="icon" className="rounded-full h-10 w-10 bg-primary" onClick={onNewChat}>
+                  <Plus className="h-5 w-5"/>
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="right"><p>New Chat</p></TooltipContent>
