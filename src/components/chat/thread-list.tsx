@@ -50,7 +50,7 @@ export function ThreadList({
             className={cn(
               "group relative cursor-pointer rounded-lg border p-4 transition-colors",
               activeThreadId === thread.id
-                ? "bg-accent text-accent-foreground"
+                ? "bg-primary text-primary-foreground border-primary"
                 : "hover:bg-muted"
             )}
           >
@@ -58,7 +58,7 @@ export function ThreadList({
             <p className={cn(
               "text-sm",
               activeThreadId === thread.id
-                ? "text-accent-foreground/80"
+                ? "text-primary-foreground/80"
                 : "text-muted-foreground"
             )}>
               Last message {formatDistanceToNow(new Date(thread.updatedAt), { addSuffix: true })}
@@ -100,7 +100,7 @@ export function ThreadList({
             variant='ghost'
             className={cn(
               "h-10 w-full justify-start gap-2 truncate pl-2",
-              activeThreadId === thread.id && "bg-accent text-accent-foreground hover:bg-accent/90"
+              activeThreadId === thread.id && "bg-primary text-primary-foreground hover:bg-primary/90"
             )}
             onClick={() => onSelectThread(thread)}
           >
