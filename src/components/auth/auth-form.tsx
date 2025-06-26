@@ -128,6 +128,9 @@ export function AuthForm({ mode }: AuthFormProps) {
           case 'auth/account-exists-with-different-credential':
              description = 'An account already exists with this email. Please sign in using the original method.';
              break;
+          case 'auth/unauthorized-domain':
+            description = 'This domain is not authorized for authentication. Please add it to the authorized domains in your Firebase project console.';
+            break;
           default:
             description = error.message;
         }
