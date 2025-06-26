@@ -81,11 +81,21 @@ export function AppSidebar({
   
   const handleNewChat = () => {
     onNewChat();
+    if (!isDesktop) {
+        setIsOpen(false);
+    }
   }
 
   const handleSelectThreadFromDialog = (thread: Thread) => {
     onSelectThread(thread);
     setIsHistoryOpen(false);
+  }
+
+  const handleSelectThread = (thread: Thread) => {
+    onSelectThread(thread);
+    if (!isDesktop) {
+        setIsOpen(false);
+    }
   }
 
   const SidebarDesktopContent = (
@@ -120,7 +130,7 @@ export function AppSidebar({
               <ThreadList
                 threads={filteredThreads}
                 activeThreadId={activeThreadId}
-                onSelectThread={onSelectThread}
+                onSelectThread={handleSelectThread}
                 onDeleteThread={onDeleteThread}
               />
             </ScrollArea>
@@ -247,7 +257,7 @@ export function AppSidebar({
           <h1 className="font-headline text-xl font-bold">EchoFlow</h1>
         </div>
         <SheetTrigger asChild>
-           <Button variant="ghost" size="icon">
+           <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
               <PanelLeft className="h-5 w-5" />
           </Button>
         </SheetTrigger>
@@ -255,7 +265,7 @@ export function AppSidebar({
 
       <div className="flex flex-1 flex-col overflow-y-auto p-2">
         <div className="p-2">
-            <Button className="w-full" onClick={onNewChat}>
+            <Button className="w-full" onClick={handleNewChat}>
             <Plus className="-ml-2 h-4 w-4" />
             New Chat
             </Button>
@@ -273,7 +283,7 @@ export function AppSidebar({
             <ThreadList
             threads={filteredThreads}
             activeThreadId={activeThreadId}
-            onSelectThread={onSelectThread}
+            onSelectThread={handleSelectThread}
             onDeleteThread={onDeleteThread}
             />
         </ScrollArea>
@@ -310,7 +320,7 @@ export function AppSidebar({
               <PanelLeft />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-[260px] p-0 bg-muted">
+          <SheetContent side="left" className="w-[224px] p-0 bg-muted">
             <SheetHeader className="sr-only">
               <SheetTitle>Menu</SheetTitle>
             </SheetHeader>
@@ -321,7 +331,7 @@ export function AppSidebar({
 
       <aside
         className={`hidden md:flex flex-col h-screen transition-all duration-300 ease-in-out border-r bg-card flex-shrink-0 ${
-          isOpen ? 'w-64' : 'w-20'
+          isOpen ? 'w-56' : 'w-20'
         }`}
       >
         {SidebarDesktopContent}
