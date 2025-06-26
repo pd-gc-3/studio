@@ -48,26 +48,28 @@ export function ThreadList({
             key={thread.id}
             onClick={() => onSelectThread(thread)}
             className={cn(
-              "group relative cursor-pointer rounded-lg border p-4 transition-colors",
+              "group flex cursor-pointer items-center justify-between rounded-lg border p-4 transition-colors",
               activeThreadId === thread.id
                 ? "bg-primary text-primary-foreground border-primary"
                 : "hover:bg-muted"
             )}
           >
-            <h3 className="font-semibold truncate pr-8">{thread.threadTitle}</h3>
-            <p className={cn(
-              "text-sm",
-              activeThreadId === thread.id
-                ? "text-primary-foreground/80"
-                : "text-muted-foreground"
-            )}>
-              Last message {formatDistanceToNow(new Date(thread.updatedAt), { addSuffix: true })}
-            </p>
-            <div className="absolute right-2 top-1/2 -translate-y-1/2 transition-opacity">
+            <div className="flex-1 overflow-hidden">
+              <h3 className="font-semibold truncate">{thread.threadTitle}</h3>
+              <p className={cn(
+                "text-sm",
+                activeThreadId === thread.id
+                  ? "text-primary-foreground/80"
+                  : "text-muted-foreground"
+              )}>
+                Last message {formatDistanceToNow(new Date(thread.updatedAt), { addSuffix: true })}
+              </p>
+            </div>
+            <div className="flex-shrink-0 pl-2">
                <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button variant="ghost" size="icon" className="h-8 w-8" onClick={(e) => e.stopPropagation()}>
-                    <Trash2 className="h-4 w-4 text-muted-foreground" />
+                    <Trash2 className="h-4 w-4" />
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent onClick={(e) => e.stopPropagation()}>
@@ -95,23 +97,32 @@ export function ThreadList({
   return (
     <div className="space-y-1 p-2">
       {threads.map((thread) => (
-        <div key={thread.id} className="group relative">
-          <Button
-            variant='ghost'
-            className={cn(
-              "h-10 w-full justify-start gap-2 truncate pl-2 pr-10",
-              activeThreadId === thread.id && "bg-primary text-primary-foreground hover:bg-primary/90"
-            )}
+        <div
+          key={thread.id}
+          className={cn(
+            "group flex h-10 w-full items-center justify-between rounded-md pr-1 transition-colors",
+            activeThreadId === thread.id
+              ? "bg-primary text-primary-foreground"
+              : "hover:bg-accent"
+          )}
+        >
+          <button
+            className="flex h-full flex-1 items-center gap-2 overflow-hidden p-2 text-left focus:outline-none"
             onClick={() => onSelectThread(thread)}
           >
             <MessageSquare className="h-4 w-4 flex-shrink-0" />
-            <span className="flex-1 truncate text-left">{thread.threadTitle}</span>
-          </Button>
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 transition-opacity">
+            <span className="flex-1 truncate">{thread.threadTitle}</span>
+          </button>
+          <div className="flex-shrink-0">
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8">
-                  <Trash2 className="h-4 w-4 text-muted-foreground" />
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className={cn("h-8 w-8", activeThreadId === thread.id ? "hover:bg-primary/80" : "hover:bg-accent-foreground/10")} 
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Trash2 className="h-4 w-4" />
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
