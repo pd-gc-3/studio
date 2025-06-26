@@ -215,7 +215,7 @@ export function AppSidebar({
         </div>
         <SheetTrigger asChild>
            <Button variant="ghost" size="icon">
-              <X className="h-5 w-5" />
+              <PanelLeft className="h-5 w-5" />
           </Button>
         </SheetTrigger>
       </div>
@@ -288,7 +288,7 @@ export function AppSidebar({
 
       <aside
         className={`hidden md:flex flex-col h-screen transition-all duration-300 ease-in-out border-r ${
-          isOpen ? 'w-72 bg-muted' : 'w-20 bg-muted/50'
+          isOpen ? 'w-72 bg-card' : 'w-20 bg-muted/50'
         }`}
       >
         {SidebarDesktopContent}
