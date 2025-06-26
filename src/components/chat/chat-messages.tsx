@@ -6,7 +6,7 @@ import type { Message, User } from '@/lib/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Logo, Spinner } from '@/components/icons';
 import { Button } from '@/components/ui/button';
-import { RefreshCw, Pencil, Send } from 'lucide-react';
+import { RefreshCw, Pencil } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import TextareaAutosize from 'react-textarea-autosize';
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -93,8 +93,11 @@ export function ChatMessages({ messages, user, isLoading, onRetry }: ChatMessage
                     />
                     <div className="flex justify-end gap-2">
                         <Button variant="ghost" size="sm" onClick={() => setEditingMessageId(null)}>Cancel</Button>
-                        <Button size="sm" onClick={() => handleEditSubmit(message.id)}>
-                          <Send />
+                        <Button
+                            size="sm"
+                            onClick={() => handleEditSubmit(message.id)}
+                            className="bg-white text-black border border-input hover:bg-gray-200"
+                        >
                           Send
                         </Button>
                     </div>
