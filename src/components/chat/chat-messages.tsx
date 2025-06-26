@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 import type { Message, User } from '@/lib/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { BotIcon, Spinner } from '@/components/icons';
+import { Logo, Spinner } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { RefreshCw, Pencil } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
@@ -58,7 +58,7 @@ export function ChatMessages({ messages, user, isLoading, onRetry }: ChatMessage
             {message.role === 'assistant' && (
               <Avatar className="h-8 w-8">
                 <div className="flex h-full w-full items-center justify-center rounded-full bg-primary/20 text-primary">
-                    <BotIcon className="h-5 w-5" />
+                    <Logo className="h-5 w-5" />
                 </div>
               </Avatar>
             )}
@@ -77,7 +77,7 @@ export function ChatMessages({ messages, user, isLoading, onRetry }: ChatMessage
                     <Textarea
                         value={editingContent}
                         onChange={(e) => setEditingContent(e.target.value)}
-                        className="w-full"
+                        className="w-full text-foreground"
                     />
                     <div className="flex justify-end gap-2">
                         <Button variant="ghost" size="sm" onClick={() => setEditingMessageId(null)}>Cancel</Button>
@@ -121,7 +121,7 @@ export function ChatMessages({ messages, user, isLoading, onRetry }: ChatMessage
           <div className="flex items-start gap-4 justify-start">
              <Avatar className="h-8 w-8">
                 <div className="flex h-full w-full items-center justify-center rounded-full bg-primary/20 text-primary">
-                    <BotIcon className="h-5 w-5" />
+                    <Logo className="h-5 w-5" />
                 </div>
               </Avatar>
             <div className="bg-muted rounded-lg px-4 py-3 flex items-center gap-2">

@@ -4,7 +4,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 import type { Message } from '@/lib/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { BotIcon } from '@/components/icons';
+import { Logo } from '@/components/icons';
 import ReactMarkdown from 'react-markdown';
 
 interface ShareChatViewProps {
@@ -29,7 +29,7 @@ export function ShareChatView({ messages, user }: ShareChatViewProps) {
           {message.role === 'assistant' && (
              <Avatar className="h-8 w-8">
                 <div className="flex h-full w-full items-center justify-center rounded-full bg-primary/20 text-primary">
-                    <BotIcon className="h-5 w-5" />
+                    <Logo className="h-5 w-5" />
                 </div>
             </Avatar>
           )}
