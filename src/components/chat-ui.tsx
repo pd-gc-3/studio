@@ -79,7 +79,7 @@ export default function ChatUI() {
         isOpen={isSidebarOpen}
         setIsOpen={setSidebarOpen}
       />
-      <main className="flex-1 flex flex-col transition-all duration-300">
+      <main className="flex-1 flex flex-col min-w-0">
         {activeThread ? (
           <ChatPanel
             key={activeThread.id}
