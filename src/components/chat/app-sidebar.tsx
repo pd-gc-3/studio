@@ -202,7 +202,7 @@ export function AppSidebar({
             <Logo className="h-8 w-8 text-primary" />
             <h1 className="font-headline text-xl font-bold">EchoFlow</h1>
           </div>
-           <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsOpen(false)}>
+           <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
               <PanelLeft />
           </Button>
         </div>
