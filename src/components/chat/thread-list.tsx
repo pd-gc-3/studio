@@ -48,16 +48,16 @@ export function ThreadList({
             key={thread.id}
             onClick={() => onSelectThread(thread)}
             className={cn(
-              "group flex cursor-pointer items-center justify-between rounded-lg border p-4 transition-colors",
+              "group flex cursor-pointer items-center gap-2 rounded-lg border p-4 transition-colors",
               activeThreadId === thread.id
                 ? "bg-primary text-primary-foreground border-primary"
                 : "hover:bg-muted"
             )}
           >
-            <div className="flex-1 overflow-hidden">
+            <div className="flex-1 min-w-0 overflow-hidden">
               <h3 className="font-semibold truncate">{thread.threadTitle}</h3>
               <p className={cn(
-                "text-sm",
+                "text-sm truncate",
                 activeThreadId === thread.id
                   ? "text-primary-foreground/80"
                   : "text-muted-foreground"
@@ -65,7 +65,7 @@ export function ThreadList({
                 Last message {formatDistanceToNow(new Date(thread.updatedAt), { addSuffix: true })}
               </p>
             </div>
-            <div className="flex-shrink-0 pl-2">
+            <div className="flex-shrink-0">
                <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button variant="ghost" size="icon" className="h-8 w-8" onClick={(e) => e.stopPropagation()}>
@@ -100,14 +100,14 @@ export function ThreadList({
         <div
           key={thread.id}
           className={cn(
-            "group flex h-10 w-full items-center justify-between rounded-md px-2 transition-colors",
+            "group flex h-10 w-full items-center rounded-md px-2 transition-colors",
             activeThreadId === thread.id
               ? "bg-primary text-primary-foreground"
               : "hover:bg-accent"
           )}
         >
           <button
-            className="flex h-full flex-1 items-center gap-2 overflow-hidden text-left focus:outline-none"
+            className="flex h-full flex-1 min-w-0 items-center gap-2 overflow-hidden text-left focus:outline-none"
             onClick={() => onSelectThread(thread)}
           >
             <MessageSquare className="h-4 w-4 flex-shrink-0" />

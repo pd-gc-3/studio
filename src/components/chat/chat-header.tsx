@@ -46,7 +46,7 @@ export function ChatHeader({ threadTitle, threadId, isPublic }: ChatHeaderProps)
   return (
     <div className="flex h-14 items-center justify-between border-b bg-background px-4 md:px-6">
       <div className="flex min-w-0 items-center gap-2">
-        <h2 className="truncate text-lg font-semibold">{threadTitle}</h2>
+      <h2 className="truncate text-lg font-semibold pt-1 pr-2.5 pb-1 pl-[34px]">{threadTitle}</h2>
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
