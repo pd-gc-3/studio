@@ -111,7 +111,9 @@ export function ThreadList({
             onClick={() => onSelectThread(thread)}
           >
             <MessageSquare className="h-4 w-4 flex-shrink-0" />
-            <span className="truncate">{thread.threadTitle}</span>
+            <div className="flex-1 overflow-hidden">
+                <span className="truncate block">{thread.threadTitle}</span>
+            </div>
           </button>
           <div className="flex-shrink-0">
             <AlertDialog>
