@@ -60,7 +60,7 @@ export function ChatMessages({ messages, user, isLoading, onRetry }: ChatMessage
           <div
             key={message.id}
             className={cn(
-              'flex items-start gap-4',
+              'group flex items-start gap-2',
               message.role === 'user' ? 'justify-end' : 'justify-start'
             )}
           >
@@ -70,6 +70,12 @@ export function ChatMessages({ messages, user, isLoading, onRetry }: ChatMessage
                     <Logo className="h-5 w-5" />
                 </div>
               </Avatar>
+            )}
+
+            {message.role === 'user' && !message.isFailed && isLastUserMessage(index) && !isLoading && (
+                <Button variant="ghost" size="icon" className="h-6 w-6 flex-shrink-0 opacity-0 group-hover:opacity-100 self-center" onClick={() => handleEditClick(message)}>
+                    <Pencil className="h-3 w-3" />
+                </Button>
             )}
 
             <div
@@ -90,6 +96,7 @@ export function ChatMessages({ messages, user, isLoading, onRetry }: ChatMessage
                         className="w-full resize-none rounded-md border-input bg-card p-2 text-card-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         maxRows={5}
                         autoFocus
+                        style={{ overflow: 'hidden' }}
                     />
                     <div className="flex justify-end gap-2">
                         <Button variant="ghost" size="sm" onClick={() => setEditingMessageId(null)}>Cancel</Button>
@@ -103,16 +110,9 @@ export function ChatMessages({ messages, user, isLoading, onRetry }: ChatMessage
                     </div>
                 </div>
               ) : (
-                <div className="flex items-start justify-between gap-2">
-                    <article className="prose prose-sm dark:prose-invert flex-grow">
-                        <ReactMarkdown>{message.content}</ReactMarkdown>
-                    </article>
-                    {!message.isFailed && isLastUserMessage(index) && !isLoading && (
-                        <Button variant="ghost" size="icon" className="h-6 w-6 flex-shrink-0 opacity-50 hover:opacity-100" onClick={() => handleEditClick(message)}>
-                            <Pencil className="h-3 w-3" />
-                        </Button>
-                    )}
-                </div>
+                <article className="prose prose-sm dark:prose-invert">
+                    <ReactMarkdown>{message.content}</ReactMarkdown>
+                </article>
               )}
                {message.isFailed && (
                 <div className="mt-2 flex items-center gap-2 text-destructive text-xs">
