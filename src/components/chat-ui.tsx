@@ -50,9 +50,6 @@ export default function ChatUI() {
     };
     setThreads(prev => [newThread, ...prev]);
     setActiveThread(newThread);
-    if (!isSidebarOpen) {
-      setSidebarOpen(true);
-    }
   };
   
   const handleDeleteThread = (threadId: string) => {
