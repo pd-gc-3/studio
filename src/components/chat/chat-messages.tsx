@@ -8,7 +8,7 @@ import { Logo, Spinner } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { RefreshCw, Pencil } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import { Textarea } from '../ui/textarea';
+import TextareaAutosize from 'react-textarea-autosize';
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ChatMessagesProps {
@@ -24,10 +24,10 @@ export function ChatMessages({ messages, user, isLoading, onRetry }: ChatMessage
   const [editingContent, setEditingContent] = useState('');
 
   useEffect(() => {
-    if (scrollRef.current) {
+    if (scrollRef.current && !editingMessageId) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [messages, isLoading]);
+  }, [messages, isLoading, editingMessageId]);
 
   const handleEditClick = (message: Message) => {
     setEditingMessageId(message.id);
@@ -35,10 +35,19 @@ export function ChatMessages({ messages, user, isLoading, onRetry }: ChatMessage
   }
 
   const handleEditSubmit = (messageId: string) => {
-    onRetry(editingContent, true, messageId);
+    if (editingContent.trim()) {
+        onRetry(editingContent, true, messageId);
+    }
     setEditingMessageId(null);
     setEditingContent('');
   }
+
+  const handleEditKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>, messageId: string) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleEditSubmit(messageId);
+    }
+  };
 
   const isLastUserMessage = (index: number) => {
     return messages[index].role === 'user' && (index === messages.length - 1 || messages[index + 1]?.role !== 'user');
@@ -74,20 +83,30 @@ export function ChatMessages({ messages, user, isLoading, onRetry }: ChatMessage
             >
               {editingMessageId === message.id ? (
                  <div className="space-y-2">
-                    <Textarea
+                    <TextareaAutosize
                         value={editingContent}
                         onChange={(e) => setEditingContent(e.target.value)}
-                        className="w-full text-foreground"
+                        onKeyDown={(e) => handleEditKeyDown(e, message.id)}
+                        className="w-full resize-none rounded-md border-input bg-card p-2 text-card-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        maxRows={5}
+                        autoFocus
                     />
                     <div className="flex justify-end gap-2">
                         <Button variant="ghost" size="sm" onClick={() => setEditingMessageId(null)}>Cancel</Button>
-                        <Button size="sm" onClick={() => handleEditSubmit(message.id)}>Save</Button>
+                        <Button size="sm" onClick={() => handleEditSubmit(message.id)}>Send</Button>
                     </div>
                 </div>
               ) : (
-                <article className="prose prose-sm dark:prose-invert">
-                    <ReactMarkdown>{message.content}</ReactMarkdown>
-                </article>
+                <div className="flex items-start justify-between gap-2">
+                    <article className="prose prose-sm dark:prose-invert flex-grow">
+                        <ReactMarkdown>{message.content}</ReactMarkdown>
+                    </article>
+                    {!message.isFailed && isLastUserMessage(index) && !isLoading && (
+                        <Button variant="ghost" size="icon" className="h-6 w-6 flex-shrink-0 opacity-50 hover:opacity-100" onClick={() => handleEditClick(message)}>
+                            <Pencil className="h-3 w-3" />
+                        </Button>
+                    )}
+                </div>
               )}
                {message.isFailed && (
                 <div className="mt-2 flex items-center gap-2 text-destructive text-xs">
@@ -101,11 +120,6 @@ export function ChatMessages({ messages, user, isLoading, onRetry }: ChatMessage
                     <RefreshCw className="h-4 w-4" />
                   </Button>
                 </div>
-              )}
-              {!message.isFailed && isLastUserMessage(index) && !isLoading && (
-                  <Button variant="ghost" size="icon" className="h-6 w-6 mt-1 -mr-2 opacity-50 hover:opacity-100" onClick={() => handleEditClick(message)}>
-                      <Pencil className="h-3 w-3" />
-                  </Button>
               )}
             </div>
 
