@@ -100,20 +100,20 @@ export function ThreadList({
         <div
           key={thread.id}
           className={cn(
-            "group relative flex h-10 w-full items-center rounded-md transition-colors",
+            "group flex h-10 w-full items-center justify-between rounded-md px-2 transition-colors",
             activeThreadId === thread.id
               ? "bg-primary text-primary-foreground"
               : "hover:bg-accent"
           )}
         >
           <button
-            className="flex h-full w-full items-center gap-2 p-2 pr-10 text-left focus:outline-none"
+            className="flex h-full flex-1 items-center gap-2 overflow-hidden text-left focus:outline-none"
             onClick={() => onSelectThread(thread)}
           >
             <MessageSquare className="h-4 w-4 flex-shrink-0" />
-            <span className="truncate">{thread.threadTitle}</span>
+            <span className="flex-1 truncate">{thread.threadTitle}</span>
           </button>
-          <div className="absolute right-1 top-1/2 -translate-y-1/2 flex-shrink-0">
+          <div className="flex-shrink-0">
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button 
