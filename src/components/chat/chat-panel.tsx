@@ -36,6 +36,8 @@ export function ChatPanel({ thread, user }: ChatPanelProps) {
   const handleSendMessage = async (content: string, isRetry = false, messageIdToReplace?: string) => {
     setIsLoading(true);
     
+    let updatedMessages;
+
     const userMessage: Message = {
       id: messageIdToReplace || `msg-${Date.now()}`,
       threadId: currentThread.id,
@@ -48,9 +50,8 @@ export function ChatPanel({ thread, user }: ChatPanelProps) {
     if (isRetry && messageIdToReplace) {
         const messageIndex = messages.findIndex(msg => msg.id === messageIdToReplace);
         if (messageIndex !== -1) {
-            // This is an edit or retry. Slice messages up to the edited one and add the new version.
-            // This effectively removes all subsequent messages.
-            const updatedMessages = [
+            // This is an edit. Slice messages up to the edited one and add the new version.
+            updatedMessages = [
                 ...messages.slice(0, messageIndex),
                 { ...userMessage, isFailed: false }
             ];
@@ -61,7 +62,8 @@ export function ChatPanel({ thread, user }: ChatPanelProps) {
             return;
         }
     } else {
-        setMessages(prev => [...prev, userMessage]);
+        updatedMessages = [...messages, userMessage];
+        setMessages(updatedMessages);
     }
 
     // If it's the first message, generate a title
@@ -111,8 +113,10 @@ export function ChatPanel({ thread, user }: ChatPanelProps) {
       <div className="flex-1 overflow-hidden">
         <ChatMessages messages={messages} user={user} isLoading={isLoading} onRetry={handleSendMessage} />
       </div>
-      <div className="border-t bg-background p-4">
-        <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
+      <div className="border-t bg-background">
+        <div className="mx-auto max-w-3xl p-4">
+          <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
+        </div>
       </div>
     </div>
   );

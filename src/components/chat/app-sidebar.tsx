@@ -314,13 +314,13 @@ export function AppSidebar({
   return (
     <>
       <div className="absolute left-2 top-2 z-10 md:hidden">
-        <Sheet open={isOpen && !isDesktop} onOpenChange={setIsOpen}>
+        <Sheet open={!isDesktop && isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon">
               <PanelLeft />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-[224px] p-0 bg-muted">
+          <SheetContent side="left" className="p-0 bg-muted">
             <SheetHeader className="sr-only">
               <SheetTitle>Menu</SheetTitle>
             </SheetHeader>
@@ -331,7 +331,7 @@ export function AppSidebar({
 
       <aside
         className={`hidden md:flex flex-col h-screen transition-all duration-300 ease-in-out border-r bg-card flex-shrink-0 ${
-          isOpen ? 'w-56' : 'w-20'
+          isOpen ? 'w-56' : 'w-16'
         }`}
       >
         {SidebarDesktopContent}

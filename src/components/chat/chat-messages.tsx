@@ -36,7 +36,10 @@ export function ChatMessages({ messages, user, isLoading, onRetry }: ChatMessage
 
   const handleEditSubmit = (messageId: string) => {
     if (editingContent.trim()) {
-        onRetry(editingContent, true, messageId);
+        const messageToRetry = messages.find(msg => msg.id === messageId);
+        if (messageToRetry) {
+             onRetry(editingContent, true, messageId);
+        }
     }
     setEditingMessageId(null);
     setEditingContent('');
@@ -55,7 +58,7 @@ export function ChatMessages({ messages, user, isLoading, onRetry }: ChatMessage
 
   return (
     <ScrollArea ref={scrollRef} className="h-full">
-      <div className="p-4 space-y-6">
+      <div className="space-y-6 p-4 md:p-6">
         {messages.map((message, index) => (
           <div
             key={message.id}
@@ -72,18 +75,20 @@ export function ChatMessages({ messages, user, isLoading, onRetry }: ChatMessage
               </Avatar>
             )}
 
-            {message.role === 'user' && !message.isFailed && isLastUserMessage(index) && !isLoading && (
-                <Button variant="ghost" size="icon" className="h-6 w-6 flex-shrink-0 opacity-0 group-hover:opacity-100 self-center" onClick={() => handleEditClick(message)}>
-                    <Pencil className="h-3 w-3" />
-                </Button>
-            )}
+            <div className="self-center">
+              {message.role === 'user' && !message.isFailed && isLastUserMessage(index) && !isLoading && !editingMessageId &&(
+                  <Button variant="ghost" size="icon" className="h-6 w-6 flex-shrink-0 opacity-0 group-hover:opacity-100" onClick={() => handleEditClick(message)}>
+                      <Pencil className="h-3 w-3" />
+                  </Button>
+              )}
+            </div>
 
             <div className={cn("flex flex-col", message.role === 'user' ? 'items-end' : 'items-start')}>
               <div
                 className={cn(
                   'max-w-xl rounded-lg px-4 py-2 break-words',
                   message.role === 'user'
-                    ? 'bg-primary/90 text-primary-foreground'
+                    ? 'bg-primary text-primary-foreground'
                     : 'bg-muted',
                   { 'border-destructive border': message.isFailed }
                 )}

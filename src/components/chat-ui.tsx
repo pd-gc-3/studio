@@ -71,7 +71,7 @@ export default function ChatUI() {
   }
 
   return (
-    <div className="h-screen w-full bg-background text-foreground md:flex">
+    <div className="flex h-screen w-full flex-col bg-background text-foreground md:flex-row">
       <AppSidebar
         user={user}
         threads={threads}
@@ -90,7 +90,7 @@ export default function ChatUI() {
             user={user}
           />
         ) : (
-          <div className="flex h-full flex-col items-center justify-center text-center">
+          <div className="flex h-full flex-col items-center justify-center p-4 text-center">
             <h1 className="font-headline text-2xl font-bold">Welcome to EchoFlow</h1>
             <p className="text-muted-foreground">Start a new conversation by clicking "New Chat" in the sidebar.</p>
              <Button onClick={handleNewChat} className="mt-4">Start New Chat</Button>
