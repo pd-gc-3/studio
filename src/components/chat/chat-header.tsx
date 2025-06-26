@@ -51,7 +51,7 @@ export function ChatHeader({ threadTitle, threadId, isPublic, onToggleSidebar }:
           variant="ghost"
           size="icon"
           onClick={onToggleSidebar}
-          className="md:hidden"
+          className="hidden md:inline-flex"
         >
           <PanelLeft />
           <span className="sr-only">Toggle Sidebar</span>
