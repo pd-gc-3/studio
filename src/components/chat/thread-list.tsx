@@ -100,7 +100,7 @@ export function ThreadList({
         <div
           key={thread.id}
           className={cn(
-            "group flex h-10 w-full items-center justify-between rounded-md pr-1 transition-colors",
+            "group flex h-10 w-full items-center rounded-md pr-1 transition-colors",
             activeThreadId === thread.id
               ? "bg-primary text-primary-foreground"
               : "hover:bg-accent"
