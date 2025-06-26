@@ -320,7 +320,7 @@ export function AppSidebar({
       </div>
 
       <aside
-        className={`hidden md:flex flex-col h-screen transition-all duration-300 ease-in-out border-r ${
+        className={`hidden md:flex flex-col h-screen transition-all duration-300 ease-in-out border-r fixed top-0 left-0 z-20 ${
           isOpen ? 'w-72 bg-card' : 'w-20 bg-muted/50'
         }`}
       >

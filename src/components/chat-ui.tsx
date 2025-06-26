@@ -50,6 +50,9 @@ export default function ChatUI() {
     };
     setThreads(prev => [newThread, ...prev]);
     setActiveThread(newThread);
+    if (!isSidebarOpen) {
+      // Don't open sidebar if it's closed
+    }
   };
   
   const handleDeleteThread = (threadId: string) => {
@@ -68,7 +71,7 @@ export default function ChatUI() {
   }
 
   return (
-    <div className="flex h-screen w-full bg-background text-foreground">
+    <div className="h-screen w-full bg-background text-foreground">
       <AppSidebar
         user={user}
         threads={threads}
@@ -79,7 +82,11 @@ export default function ChatUI() {
         isOpen={isSidebarOpen}
         setIsOpen={setSidebarOpen}
       />
-      <main className="flex-1 flex flex-col min-w-0">
+      <main
+        className={`flex flex-col h-full transition-all duration-300 ease-in-out ${
+          isSidebarOpen ? 'md:ml-72' : 'md:ml-20'
+        }`}
+      >
         {activeThread ? (
           <ChatPanel
             key={activeThread.id}
