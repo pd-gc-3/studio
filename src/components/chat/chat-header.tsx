@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { PanelLeft, Share2, Check, Copy } from 'lucide-react';
+import { Share2, Check, Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import {
   DropdownMenu,
@@ -18,10 +18,9 @@ interface ChatHeaderProps {
   threadTitle: string;
   threadId: string;
   isPublic: boolean;
-  onToggleSidebar: () => void;
 }
 
-export function ChatHeader({ threadTitle, threadId, isPublic, onToggleSidebar }: ChatHeaderProps) {
+export function ChatHeader({ threadTitle, threadId, isPublic }: ChatHeaderProps) {
   const [isPublicState, setIsPublicState] = useState(isPublic);
   const [isCopied, setIsCopied] = useState(false);
   const { toast } = useToast();
@@ -47,15 +46,6 @@ export function ChatHeader({ threadTitle, threadId, isPublic, onToggleSidebar }:
   return (
     <div className="flex h-14 items-center justify-between border-b bg-background px-4">
       <div className="flex items-center gap-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onToggleSidebar}
-          className="hidden md:inline-flex"
-        >
-          <PanelLeft />
-          <span className="sr-only">Toggle Sidebar</span>
-        </Button>
         <h2 className="truncate text-lg font-semibold">{threadTitle}</h2>
       </div>
       <DropdownMenu>

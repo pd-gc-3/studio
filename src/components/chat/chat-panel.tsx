@@ -11,10 +11,9 @@ import { useToast } from '@/hooks/use-toast';
 interface ChatPanelProps {
   thread: Thread;
   user: User;
-  onToggleSidebar: () => void;
 }
 
-export function ChatPanel({ thread, user, onToggleSidebar }: ChatPanelProps) {
+export function ChatPanel({ thread, user }: ChatPanelProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [currentThread, setCurrentThread] = useState(thread);
@@ -31,7 +30,8 @@ export function ChatPanel({ thread, user, onToggleSidebar }: ChatPanelProps) {
     } else {
         setMessages(mockMessages);
     }
-  }, [thread.id, thread.threadTitle]);
+    setCurrentThread(thread);
+  }, [thread.id, thread.threadTitle, thread]);
 
   const handleSendMessage = async (content: string, isRetry = false, messageIdToReplace?: string) => {
     setIsLoading(true);
@@ -94,7 +94,6 @@ export function ChatPanel({ thread, user, onToggleSidebar }: ChatPanelProps) {
         threadTitle={currentThread.threadTitle}
         threadId={currentThread.id}
         isPublic={currentThread.isPublic}
-        onToggleSidebar={onToggleSidebar}
       />
       <div className="flex-1 overflow-hidden">
         <ChatMessages messages={messages} user={user} isLoading={isLoading} onRetry={handleSendMessage} />

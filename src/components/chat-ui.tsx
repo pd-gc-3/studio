@@ -50,6 +50,9 @@ export default function ChatUI() {
     };
     setThreads(prev => [newThread, ...prev]);
     setActiveThread(newThread);
+    if (!isSidebarOpen) {
+      setSidebarOpen(true);
+    }
   };
   
   const handleDeleteThread = (threadId: string) => {
@@ -85,7 +88,6 @@ export default function ChatUI() {
             key={activeThread.id}
             thread={activeThread}
             user={user}
-            onToggleSidebar={() => setSidebarOpen(!isSidebarOpen)}
           />
         ) : (
           <div className="flex h-full flex-col items-center justify-center text-center">
