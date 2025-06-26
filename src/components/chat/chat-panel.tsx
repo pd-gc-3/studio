@@ -46,7 +46,20 @@ export function ChatPanel({ thread, user }: ChatPanelProps) {
     
     // Optimistically update UI
     if (isRetry && messageIdToReplace) {
-        setMessages(msgs => msgs.map(m => m.id === messageIdToReplace ? { ...userMessage, isFailed: false } : m));
+        const messageIndex = messages.findIndex(msg => msg.id === messageIdToReplace);
+        if (messageIndex !== -1) {
+            // This is an edit or retry. Slice messages up to the edited one and add the new version.
+            // This effectively removes all subsequent messages.
+            const updatedMessages = [
+                ...messages.slice(0, messageIndex),
+                { ...userMessage, isFailed: false }
+            ];
+            setMessages(updatedMessages);
+        } else {
+            // Should not happen, but as a safeguard.
+            setIsLoading(false);
+            return;
+        }
     } else {
         setMessages(prev => [...prev, userMessage]);
     }
