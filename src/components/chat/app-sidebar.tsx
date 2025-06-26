@@ -46,7 +46,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { formatDistanceToNow } from 'date-fns';
-
+import { useMediaQuery } from '@/hooks/use-media-query';
 
 interface AppSidebarProps {
   user: User;
@@ -73,6 +73,7 @@ export function AppSidebar({
   const [search, setSearch] = React.useState('');
   const [isHistoryOpen, setIsHistoryOpen] = React.useState(false);
   const searchInputRef = React.useRef<HTMLInputElement>(null);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
 
   const filteredThreads = threads.filter((thread) =>
     thread.threadTitle.toLowerCase().includes(search.toLowerCase())
@@ -311,7 +312,7 @@ export function AppSidebar({
   return (
     <>
       <div className="absolute left-2 top-2 z-10 md:hidden">
-        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+        <Sheet open={isOpen && !isDesktop} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon">
               <PanelLeft />
