@@ -15,6 +15,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { formatDistanceToNow } from 'date-fns';
+import { cn } from '@/lib/utils';
 
 interface ThreadListProps {
   threads: Thread[];
@@ -46,10 +47,20 @@ export function ThreadList({
           <div
             key={thread.id}
             onClick={() => onSelectThread(thread)}
-            className="group relative cursor-pointer rounded-lg border p-4 transition-colors hover:bg-muted"
+            className={cn(
+              "group relative cursor-pointer rounded-lg border p-4 transition-colors",
+              activeThreadId === thread.id
+                ? "bg-accent text-accent-foreground"
+                : "hover:bg-muted"
+            )}
           >
             <h3 className="font-semibold truncate pr-8">{thread.threadTitle}</h3>
-            <p className="text-sm text-muted-foreground">
+            <p className={cn(
+              "text-sm",
+              activeThreadId === thread.id
+                ? "text-accent-foreground/80"
+                : "text-muted-foreground"
+            )}>
               Last message {formatDistanceToNow(new Date(thread.updatedAt), { addSuffix: true })}
             </p>
             <div className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -86,8 +97,11 @@ export function ThreadList({
       {threads.map((thread) => (
         <div key={thread.id} className="group relative">
           <Button
-            variant={activeThreadId === thread.id ? 'secondary' : 'ghost'}
-            className="h-10 w-full justify-start gap-2 truncate pl-2"
+            variant='ghost'
+            className={cn(
+              "h-10 w-full justify-start gap-2 truncate pl-2",
+              activeThreadId === thread.id && "bg-accent text-accent-foreground hover:bg-accent/90"
+            )}
             onClick={() => onSelectThread(thread)}
           >
             <MessageSquare className="h-4 w-4 flex-shrink-0" />

@@ -3,7 +3,7 @@
 import React, { useState, useRef } from 'react';
 import TextareaAutosize from 'react-textarea-autosize';
 import { Button } from '@/components/ui/button';
-import { SendHorizonal } from 'lucide-react';
+import { SendHorizontal } from 'lucide-react';
 import { Spinner } from '../icons';
 
 interface ChatInputProps {
@@ -52,7 +52,7 @@ export function ChatInput({ onSendMessage, isLoading }: ChatInputProps) {
         disabled={isLoading || !content.trim()}
         className="absolute right-1.5 bottom-1.5 h-9 w-9"
       >
-        {isLoading ? <Spinner className="h-4 w-4" /> : <SendHorizonal className="h-4 w-4" />}
+        {isLoading ? <Spinner className="h-4 w-4" /> : <SendHorizontal className="h-4 w-4" />}
         <span className="sr-only">Send message</span>
       </Button>
     </form>
