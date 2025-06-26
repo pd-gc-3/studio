@@ -78,53 +78,55 @@ export function ChatMessages({ messages, user, isLoading, onRetry }: ChatMessage
                 </Button>
             )}
 
-            <div
-              className={cn(
-                'max-w-xl rounded-lg px-4 py-2 break-words',
-                message.role === 'user'
-                  ? 'bg-primary/90 text-primary-foreground'
-                  : 'bg-muted',
-                { 'border-destructive border': message.isFailed }
-              )}
-            >
-              {editingMessageId === message.id ? (
-                 <div className="space-y-2">
-                    <TextareaAutosize
-                        value={editingContent}
-                        onChange={(e) => setEditingContent(e.target.value)}
-                        onKeyDown={(e) => handleEditKeyDown(e, message.id)}
-                        className="w-full resize-none rounded-md border-input bg-card p-2 text-card-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                        maxRows={5}
-                        autoFocus
-                        style={{ overflow: 'hidden' }}
-                    />
-                    <div className="flex justify-end gap-2">
-                        <Button variant="ghost" size="sm" onClick={() => setEditingMessageId(null)}>Cancel</Button>
-                        <Button
-                            size="sm"
-                            onClick={() => handleEditSubmit(message.id)}
-                            className="bg-white text-black border border-input hover:bg-gray-200"
-                        >
-                          Send
-                        </Button>
-                    </div>
-                </div>
-              ) : (
-                <article className="prose prose-sm dark:prose-invert">
-                    <ReactMarkdown>{message.content}</ReactMarkdown>
-                </article>
-              )}
-               {message.isFailed && (
-                <div className="mt-2 flex items-center gap-2 text-destructive text-xs">
-                  <span>Message failed to send.</span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6"
-                    onClick={() => onRetry(message.content, true, message.id)}
-                  >
-                    <RefreshCw className="h-4 w-4" />
-                  </Button>
+            <div className={cn("flex flex-col", message.role === 'user' ? 'items-end' : 'items-start')}>
+              <div
+                className={cn(
+                  'max-w-xl rounded-lg px-4 py-2 break-words',
+                  message.role === 'user'
+                    ? 'bg-primary/90 text-primary-foreground'
+                    : 'bg-muted',
+                  { 'border-destructive border': message.isFailed }
+                )}
+              >
+                {editingMessageId === message.id ? (
+                  <TextareaAutosize
+                      value={editingContent}
+                      onChange={(e) => setEditingContent(e.target.value)}
+                      onKeyDown={(e) => handleEditKeyDown(e, message.id)}
+                      className="w-full resize-none rounded-md border-input bg-card p-2 text-card-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      maxRows={5}
+                      autoFocus
+                      style={{ overflow: 'hidden' }}
+                  />
+                ) : (
+                  <article className="prose prose-sm dark:prose-invert">
+                      <ReactMarkdown>{message.content}</ReactMarkdown>
+                  </article>
+                )}
+                 {message.isFailed && (
+                  <div className="mt-2 flex items-center gap-2 text-destructive text-xs">
+                    <span>Message failed to send.</span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6"
+                      onClick={() => onRetry(message.content, true, message.id)}
+                    >
+                      <RefreshCw className="h-4 w-4" />
+                    </Button>
+                  </div>
+                )}
+              </div>
+              {editingMessageId === message.id && (
+                <div className="flex justify-end gap-2 mt-2 w-full max-w-xl">
+                    <Button variant="ghost" size="sm" onClick={() => setEditingMessageId(null)}>Cancel</Button>
+                    <Button
+                        size="sm"
+                        onClick={() => handleEditSubmit(message.id)}
+                        className="bg-white text-black border border-input hover:bg-gray-200"
+                    >
+                      Send
+                    </Button>
                 </div>
               )}
             </div>
