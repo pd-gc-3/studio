@@ -71,7 +71,7 @@ export default function ChatUI() {
   }
 
   return (
-    <div className="h-screen w-full bg-background text-foreground">
+    <div className="h-screen w-full bg-background text-foreground md:flex">
       <AppSidebar
         user={user}
         threads={threads}
@@ -82,11 +82,7 @@ export default function ChatUI() {
         isOpen={isSidebarOpen}
         setIsOpen={setSidebarOpen}
       />
-      <main
-        className={`flex flex-col h-full transition-all duration-300 ease-in-out ${
-          isSidebarOpen ? 'md:ml-72' : 'md:ml-20'
-        }`}
-      >
+      <main className="flex h-full flex-1 flex-col overflow-hidden">
         {activeThread ? (
           <ChatPanel
             key={activeThread.id}
