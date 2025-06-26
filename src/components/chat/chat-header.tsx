@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 
 interface ChatHeaderProps {
   threadTitle: string;
@@ -95,6 +96,3 @@ export function ChatHeader({ threadTitle, threadId, isPublic, onToggleSidebar }:
     </div>
   );
 }
-
-// Dummy components to resolve compilation error
-const Input = (props: React.InputHTMLAttributes<HTMLInputElement>) => <input {...props} />;

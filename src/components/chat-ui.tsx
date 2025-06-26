@@ -7,6 +7,7 @@ import { AppSidebar } from '@/components/chat/app-sidebar';
 import { ChatPanel } from '@/components/chat/chat-panel';
 import type { Thread } from '@/lib/types';
 import { Spinner } from '@/components/icons';
+import { Button } from '@/components/ui/button';
 
 export default function ChatUI() {
   const { user, loading, token } = useAuth();
@@ -97,10 +98,3 @@ export default function ChatUI() {
     </div>
   );
 }
-
-// Dummy Button component to resolve compilation error
-const Button = ({ onClick, className, children }: { onClick: () => void; className?: string; children: React.ReactNode }) => (
-    <button onClick={onClick} className={`px-4 py-2 rounded-md ${className}`}>
-        {children}
-    </button>
-);

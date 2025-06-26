@@ -25,6 +25,7 @@ import {
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { Spinner } from '@/components/icons';
+import { Card } from '@/components/ui/card';
 
 const signupSchema = z
   .object({
@@ -222,10 +223,3 @@ export function AuthForm({ mode }: AuthFormProps) {
     </Card>
   );
 }
-
-// Dummy Card component to resolve compilation error
-const Card = ({ className, children }: { className?: string; children: React.ReactNode }) => (
-    <div className={`rounded-lg border bg-card text-card-foreground shadow-sm ${className}`}>
-        {children}
-    </div>
-);

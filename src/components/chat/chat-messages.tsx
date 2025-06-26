@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { RefreshCw, Pencil } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { Textarea } from '../ui/textarea';
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ChatMessagesProps {
   messages: Message[];
@@ -133,14 +134,3 @@ export function ChatMessages({ messages, user, isLoading, onRetry }: ChatMessage
     </ScrollArea>
   );
 }
-
-// Dummy ScrollArea component to resolve compilation error
-const ScrollArea = React.forwardRef<
-  HTMLDivElement,
-  { children: React.ReactNode; className?: string }
->(({ children, className }, ref) => (
-  <div ref={ref} className={`overflow-y-auto ${className}`}>
-    {children}
-  </div>
-));
-ScrollArea.displayName = "ScrollArea";
