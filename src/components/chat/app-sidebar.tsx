@@ -82,58 +82,70 @@ export function AppSidebar({
 
   const SidebarDesktopContent = (
     <div className="flex h-full flex-col">
-      <div className="flex items-center justify-center h-16 border-b shrink-0">
-          <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)}>
-            <PanelLeft />
-          </Button>
-      </div>
       {isOpen ? (
-        // Expanded View
-        <div className="flex flex-col p-2 overflow-y-auto">
-          <div className="p-2">
-            <Button className="w-full" onClick={onNewChat}>
-              <Plus className="-ml-2 h-4 w-4" />
-              New Chat
+        <>
+          <div className="flex items-center justify-between h-16 border-b px-4 shrink-0">
+            <div className="flex items-center gap-2">
+                <Logo className="h-8 w-8 text-primary" />
+                <h1 className="font-headline text-xl font-bold">EchoFlow</h1>
+            </div>
+            <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)}>
+                <PanelLeft />
             </Button>
           </div>
-          <div className="p-2">
-            <Input
-              ref={searchInputRef}
-              placeholder="Search threads..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
-          <ScrollArea className="flex-1">
-            <ThreadList
-              threads={filteredThreads}
-              activeThreadId={activeThreadId}
-              onSelectThread={onSelectThread}
-              onDeleteThread={onDeleteThread}
-            />
-          </ScrollArea>
-          <Separator className="my-2" />
-          <div className="flex items-center justify-between p-2">
-            <div className="flex items-center gap-3">
-              <Avatar className="h-8 w-8">
-                <AvatarImage src={user.avatarUrl ?? undefined} alt={user.fullName ?? 'User'} />
-                <AvatarFallback>{user.fullName?.[0]}</AvatarFallback>
-              </Avatar>
-              <span className="truncate text-sm font-medium">{user.fullName || user.email}</span>
-            </div>
-            <div className='flex items-center'>
-              <ThemeToggle />
-              <Button variant="ghost" size="icon" onClick={() => signOut()}>
-                <LogOut />
-                <span className="sr-only">Log out</span>
+          <div className="flex flex-1 flex-col overflow-y-auto p-2">
+            <div className="p-2">
+              <Button className="w-full" onClick={onNewChat}>
+                <Plus className="-ml-2 h-4 w-4" />
+                New Chat
               </Button>
             </div>
+            <div className="p-2">
+              <Input
+                ref={searchInputRef}
+                placeholder="Search threads..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+            <ScrollArea className="flex-1">
+              <ThreadList
+                threads={filteredThreads}
+                activeThreadId={activeThreadId}
+                onSelectThread={onSelectThread}
+                onDeleteThread={onDeleteThread}
+              />
+            </ScrollArea>
+            <Separator className="my-2" />
+            <div className="flex items-center justify-between p-2">
+              <div className="flex items-center gap-3">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={user.avatarUrl ?? undefined} alt={user.fullName ?? 'User'} />
+                  <AvatarFallback>{user.fullName?.[0]}</AvatarFallback>
+                </Avatar>
+                <span className="truncate text-sm font-medium">{user.fullName || user.email}</span>
+              </div>
+              <div className='flex items-center'>
+                <ThemeToggle />
+                <Button variant="ghost" size="icon" onClick={() => signOut()}>
+                  <LogOut />
+                  <span className="sr-only">Log out</span>
+                </Button>
+              </div>
+            </div>
           </div>
-        </div>
+        </>
       ) : (
-        // Collapsed View
-        <div className="flex h-full flex-col items-center space-y-4 p-2">
+        <div className="flex h-full flex-col items-center space-y-4 p-2 pt-4">
           <TooltipProvider delayDuration={0}>
+             <Tooltip>
+                <TooltipTrigger asChild>
+                    <Button variant="ghost" size="icon" onClick={() => setIsOpen(true)}>
+                        <PanelLeft className="h-5 w-5"/>
+                    </Button>
+                </TooltipTrigger>
+                <TooltipContent side="right"><p>Open menu</p></TooltipContent>
+            </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button variant="default" size="icon" className="rounded-full h-10 w-10 bg-primary" onClick={onNewChat}>
@@ -263,7 +275,7 @@ export function AppSidebar({
               <PanelLeft />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-[300px] p-0 bg-muted/50">
+          <SheetContent side="left" className="w-[300px] p-0 bg-muted">
             <SheetHeader className="sr-only">
               <SheetTitle>Menu</SheetTitle>
             </SheetHeader>
@@ -273,8 +285,8 @@ export function AppSidebar({
       </div>
 
       <aside
-        className={`hidden md:flex flex-col h-screen transition-all duration-300 ease-in-out bg-muted/50 border-r ${
-          isOpen ? 'w-72' : 'w-20'
+        className={`hidden md:flex flex-col h-screen transition-all duration-300 ease-in-out border-r ${
+          isOpen ? 'w-72 bg-muted' : 'w-20 bg-muted/50'
         }`}
       >
         {SidebarDesktopContent}
