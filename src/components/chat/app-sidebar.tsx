@@ -81,11 +81,6 @@ export function AppSidebar({
     onNewChat();
   }
 
-  const handleNewChatFromDialog = () => {
-    onNewChat();
-    setIsHistoryOpen(false);
-  }
-
   const handleSelectThreadFromDialog = (thread: Thread) => {
     onSelectThread(thread);
     setIsHistoryOpen(false);
@@ -179,12 +174,8 @@ export function AppSidebar({
               </Tooltip>
               <DialogContent className="max-w-2xl bg-card">
                 <DialogHeader>
-                  <DialogTitle className="flex items-center justify-between">
+                  <DialogTitle className="flex items-center">
                     <span className="text-xl font-bold font-headline">Your chat history</span>
-                    <Button onClick={handleNewChatFromDialog} size="sm" variant="outline">
-                      <Plus className="mr-2 h-4 w-4" />
-                      New chat
-                    </Button>
                   </DialogTitle>
                 </DialogHeader>
                 <div className="space-y-4">
