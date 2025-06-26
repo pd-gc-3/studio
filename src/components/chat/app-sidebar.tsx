@@ -15,6 +15,8 @@ import { ThreadList } from './thread-list';
 import {
   Sheet,
   SheetContent,
+  SheetHeader,
+  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
 
@@ -115,6 +117,9 @@ export function AppSidebar({
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-[300px] p-0">
+            <SheetHeader className="sr-only">
+              <SheetTitle>Menu</SheetTitle>
+            </SheetHeader>
             <SidebarContent />
           </SheetContent>
         </Sheet>
