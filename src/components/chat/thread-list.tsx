@@ -116,7 +116,9 @@ export function ThreadList({
           )}
         >
           <MessageSquare className="h-4 w-4 flex-shrink-0" />
-          <span className="flex-1 truncate min-w-0">{thread.threadTitle}</span>
+          <div className="flex-1 min-w-0">
+            <span className="truncate">{thread.threadTitle}</span>
+          </div>
           <div className="flex-shrink-0">
             <AlertDialog>
               <AlertDialogTrigger asChild>
