@@ -1,3 +1,4 @@
+
 'use client';
 
 import type { Thread } from '@/lib/types';
@@ -48,16 +49,16 @@ export function ThreadList({
             key={thread.id}
             onClick={() => onSelectThread(thread)}
             className={cn(
-              "group flex cursor-pointer items-center gap-2 rounded-lg border p-4 transition-colors",
+              "group flex cursor-pointer items-center rounded-lg border p-4 transition-colors",
               activeThreadId === thread.id
                 ? "bg-primary text-primary-foreground border-primary"
                 : "hover:bg-muted"
             )}
           >
-            <div className="flex-1 min-w-0 overflow-hidden">
-              <h3 className="font-semibold truncate">{thread.threadTitle}</h3>
+            <div className="flex-1 overflow-hidden">
+              <h3 className="font-semibold truncate whitespace-nowrap">{thread.threadTitle}</h3>
               <p className={cn(
-                "text-sm truncate",
+                "text-sm truncate whitespace-nowrap",
                 activeThreadId === thread.id
                   ? "text-primary-foreground/80"
                   : "text-muted-foreground"
@@ -65,7 +66,7 @@ export function ThreadList({
                 Last message {formatDistanceToNow(new Date(thread.updatedAt), { addSuffix: true })}
               </p>
             </div>
-            <div className="flex-shrink-0">
+            <div className="ml-2 flex-shrink-0">
                <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button variant="ghost" size="icon" className="h-8 w-8" onClick={(e) => e.stopPropagation()}>
@@ -109,17 +110,17 @@ export function ThreadList({
             }
           }}
           className={cn(
-            "group flex h-10 w-full cursor-pointer items-center gap-2 rounded-md px-2 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            "group flex h-10 w-full cursor-pointer items-center rounded-md px-2 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
             activeThreadId === thread.id
               ? "bg-primary text-primary-foreground"
               : "hover:bg-accent"
           )}
         >
           <MessageSquare className="h-4 w-4 flex-shrink-0" />
-          <div className="flex-1 min-w-0">
-            <span className="truncate">{thread.threadTitle}</span>
+          <div className="ml-2 flex-1 overflow-hidden">
+            <p className="truncate whitespace-nowrap">{thread.threadTitle}</p>
           </div>
-          <div className="flex-shrink-0">
+          <div className="ml-2 flex-shrink-0">
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button 
