@@ -109,17 +109,14 @@ export function ThreadList({
             }
           }}
           className={cn(
-            "group flex h-10 w-full cursor-pointer items-center justify-between rounded-md px-2 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            "group flex h-10 w-full cursor-pointer items-center gap-2 rounded-md px-2 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
             activeThreadId === thread.id
               ? "bg-primary text-primary-foreground"
               : "hover:bg-accent"
           )}
         >
-          <div className="flex min-w-0 items-center gap-2">
-            <MessageSquare className="h-4 w-4 flex-shrink-0" />
-            <span className="truncate">{thread.threadTitle}</span>
-          </div>
-
+          <MessageSquare className="h-4 w-4 flex-shrink-0" />
+          <span className="flex-1 truncate min-w-0">{thread.threadTitle}</span>
           <div className="flex-shrink-0">
             <AlertDialog>
               <AlertDialogTrigger asChild>
