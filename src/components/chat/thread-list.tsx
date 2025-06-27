@@ -2,7 +2,7 @@
 
 import type { Thread } from '@/lib/types';
 import { Button } from '@/components/ui/button';
-import { MessageSquare, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -110,7 +110,6 @@ export function ThreadList({
             activeThreadId === thread.id && "active-thread"
           )}
         >
-          <MessageSquare className="icon" />
           <div className="thread-text">
             <p className="thread-title">{thread.threadTitle}</p>
           </div>

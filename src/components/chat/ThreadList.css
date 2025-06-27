@@ -74,11 +74,11 @@
 }
 
 .thread-item:not(.active-thread):hover {
-  background-color: var(--accent);
+  background-color: #A3E635;
 }
 
 .active-thread {
-  background-color: var(--primary);
+  background-color: #66B5F5;
   color: var(--primary-foreground);
 }
 
@@ -89,7 +89,6 @@
 }
 
 .thread-text {
-  margin-left: 0.5rem;
   flex: 1;
   min-width: 0;
   overflow: hidden;
