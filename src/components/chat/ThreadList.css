@@ -1,0 +1,114 @@
+.empty-message {
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.dialog-mode-container {
+  padding: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.dialog-thread-item {
+  display: flex;
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.dialog-thread-item:hover {
+  background-color: var(--muted);
+}
+
+.active-dialog-thread {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
+}
+
+.dialog-thread-content {
+  flex: 1;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.thread-title {
+  font-weight: 200;
+  font-size: small;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.thread-subtitle {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.active-subtitle {
+  color: rgba(var(--primary-foreground-rgb), 0.8);
+}
+
+.normal-mode-container {
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.thread-item {
+  display: flex;
+  align-items: center;
+  padding: 3px;
+  border-radius: 0.375rem;
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.thread-item:hover {
+  background-color: var(--accent);
+}
+
+.active-thread {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.icon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+.thread-text {
+  margin-left: 0.5rem;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.delete-button-container {
+  margin-left: 0.5rem;
+  flex-shrink: 0;
+}
+
+.delete-button {
+  width: 2rem;
+  height: 2rem;
+}
+
+.active-delete-hover:hover {
+  background-color: rgba(var(--primary-rgb), 0.8);
+}
+
+.inactive-delete-hover:hover {
+  background-color: rgba(var(--accent-foreground-rgb), 0.1);
+}
