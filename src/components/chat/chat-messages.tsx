@@ -58,7 +58,7 @@ export function ChatMessages({ messages, user, isLoading, onRetry }: ChatMessage
 
   return (
     <ScrollArea ref={scrollRef} className="h-full">
-      <div className="mx-auto max-w-3xl space-y-6 p-4 md:p-6">
+      <div className="mx-auto max-w-2xl space-y-6 p-4 md:p-6">
         {messages.map((message, index) => (
           <div
             key={message.id}

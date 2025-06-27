@@ -114,7 +114,7 @@ export function ChatPanel({ thread, user }: ChatPanelProps) {
         <ChatMessages messages={messages} user={user} isLoading={isLoading} onRetry={handleSendMessage} />
       </div>
       <div className="border-t bg-background">
-        <div className="mx-auto max-w-3xl p-4">
+        <div className="mx-auto max-w-2xl p-4 md:p-6">
           <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
         </div>
       </div>
