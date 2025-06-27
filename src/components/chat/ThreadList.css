@@ -22,8 +22,8 @@
   cursor: pointer;
 }
 
-.dialog-thread-item:hover {
-  background-color: var(--muted);
+.dialog-thread-item:not(.active-dialog-thread):hover {
+  background-color: var(--accent);
 }
 
 .active-dialog-thread {
@@ -73,7 +73,7 @@
   cursor: pointer;
 }
 
-.thread-item:hover {
+.thread-item:not(.active-thread):hover {
   background-color: var(--accent);
 }
 
