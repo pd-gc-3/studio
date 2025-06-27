@@ -55,7 +55,7 @@ export function ThreadList({
                 : "hover:bg-muted"
             )}
           >
-            <div className="flex-1 overflow-hidden">
+            <div className="flex-1 overflow-hidden min-w-0">
               <h3 className="font-semibold truncate whitespace-nowrap">{thread.threadTitle}</h3>
               <p className={cn(
                 "text-sm truncate whitespace-nowrap",
@@ -117,7 +117,7 @@ export function ThreadList({
           )}
         >
           <MessageSquare className="h-4 w-4 flex-shrink-0" />
-          <div className="ml-2 flex-1 overflow-hidden">
+          <div className="ml-2 flex-1 overflow-hidden min-w-0">
             <p className="truncate whitespace-nowrap">{thread.threadTitle}</p>
           </div>
           <div className="ml-2 flex-shrink-0">
