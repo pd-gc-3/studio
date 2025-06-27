@@ -97,11 +97,19 @@ export function ThreadList({
   return (
     <div className="space-y-1 p-2">
       {threads.map((thread) => (
-        <button
+        <div
           key={thread.id}
+          role="button"
+          tabIndex={0}
           onClick={() => onSelectThread(thread)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              onSelectThread(thread);
+            }
+          }}
           className={cn(
-            "group flex h-10 w-full items-center justify-between rounded-md px-2 text-left transition-colors focus:outline-none",
+            "group flex h-10 w-full cursor-pointer items-center justify-between rounded-md px-2 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
             activeThreadId === thread.id
               ? "bg-primary text-primary-foreground"
               : "hover:bg-accent"
@@ -145,7 +153,7 @@ export function ThreadList({
               </AlertDialogContent>
             </AlertDialog>
           </div>
-        </button>
+        </div>
       ))}
     </div>
   );
