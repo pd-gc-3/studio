@@ -58,7 +58,7 @@ export function ChatMessages({ messages, user, isLoading, onRetry }: ChatMessage
 
   return (
     <ScrollArea ref={scrollRef} className="h-full">
-      <div className="space-y-6 p-4 md:p-6">
+      <div className="mx-auto max-w-3xl space-y-6 p-4 md:p-6">
         {messages.map((message, index) => (
           <div
             key={message.id}
@@ -86,7 +86,7 @@ export function ChatMessages({ messages, user, isLoading, onRetry }: ChatMessage
             <div className={cn("flex flex-col", message.role === 'user' ? 'items-end' : 'items-start')}>
               <div
                 className={cn(
-                  'max-w-xl rounded-lg px-4 py-2 break-words',
+                  'max-w-2xl rounded-lg px-4 py-2 break-words',
                   message.role === 'user'
                     ? 'bg-primary text-primary-foreground'
                     : 'bg-muted',
@@ -104,7 +104,7 @@ export function ChatMessages({ messages, user, isLoading, onRetry }: ChatMessage
                       style={{ overflow: 'hidden' }}
                   />
                 ) : (
-                  <article className="prose prose-sm dark:prose-invert">
+                  <article className="prose prose-sm max-w-none dark:prose-invert">
                       <ReactMarkdown>{message.content}</ReactMarkdown>
                   </article>
                 )}
@@ -123,7 +123,7 @@ export function ChatMessages({ messages, user, isLoading, onRetry }: ChatMessage
                 )}
               </div>
               {editingMessageId === message.id && (
-                <div className="flex justify-end gap-2 mt-2 w-full max-w-xl">
+                <div className="flex justify-end gap-2 mt-2 w-full max-w-2xl">
                     <Button variant="ghost" size="sm" onClick={() => setEditingMessageId(null)}>Cancel</Button>
                     <Button
                         size="sm"

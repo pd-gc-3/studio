@@ -36,13 +36,13 @@ export function ShareChatView({ messages, user }: ShareChatViewProps) {
 
           <div
             className={cn(
-              'max-w-xl rounded-lg px-4 py-2 break-words',
+              'max-w-2xl rounded-lg px-4 py-2 break-words',
               message.role === 'user'
                 ? 'bg-blue-100 dark:bg-blue-900/50'
                 : 'bg-white dark:bg-gray-800'
             )}
           >
-             <article className="prose prose-sm dark:prose-invert">
+             <article className="prose prose-sm max-w-none dark:prose-invert">
                 <ReactMarkdown>{message.content}</ReactMarkdown>
             </article>
           </div>
