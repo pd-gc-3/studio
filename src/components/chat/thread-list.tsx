@@ -107,7 +107,7 @@ export function ThreadList({
           )}
         >
           <button
-            className="flex h-full flex-1 min-w-0 items-center gap-2 overflow-hidden text-left focus:outline-none"
+            className="flex h-full min-w-0 flex-1 items-center gap-2 overflow-hidden text-left focus:outline-none"
             onClick={() => onSelectThread(thread)}
           >
             <MessageSquare className="h-4 w-4 flex-shrink-0" />
