@@ -97,35 +97,39 @@ export function ThreadList({
   return (
     <div className="space-y-1 p-2">
       {threads.map((thread) => (
-        <div
+        <button
           key={thread.id}
+          onClick={() => onSelectThread(thread)}
           className={cn(
-            "group flex h-10 w-full items-center rounded-md px-2 transition-colors",
+            "group flex h-10 w-full items-center justify-between rounded-md px-2 text-left transition-colors focus:outline-none",
             activeThreadId === thread.id
               ? "bg-primary text-primary-foreground"
               : "hover:bg-accent"
           )}
         >
-          <button
-            className="flex h-full min-w-0 flex-1 items-center gap-2 overflow-hidden text-left focus:outline-none"
-            onClick={() => onSelectThread(thread)}
-          >
+          <div className="flex min-w-0 items-center gap-2">
             <MessageSquare className="h-4 w-4 flex-shrink-0" />
             <span className="truncate">{thread.threadTitle}</span>
-          </button>
+          </div>
+
           <div className="flex-shrink-0">
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button 
                   variant="ghost" 
                   size="icon" 
-                  className={cn("h-8 w-8", activeThreadId === thread.id ? "hover:bg-primary/80" : "hover:bg-accent-foreground/10")} 
+                  className={cn(
+                    "h-8 w-8", 
+                    activeThreadId === thread.id 
+                      ? "hover:bg-primary/80" 
+                      : "hover:bg-accent-foreground/10"
+                  )} 
                   onClick={(e) => e.stopPropagation()}
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </AlertDialogTrigger>
-              <AlertDialogContent>
+              <AlertDialogContent onClick={(e) => e.stopPropagation()}>
                 <AlertDialogHeader>
                   <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                   <AlertDialogDescription>
@@ -141,7 +145,7 @@ export function ThreadList({
               </AlertDialogContent>
             </AlertDialog>
           </div>
-        </div>
+        </button>
       ))}
     </div>
   );
