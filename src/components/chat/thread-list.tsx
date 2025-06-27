@@ -99,61 +99,62 @@ export function ThreadList({
     <div className="space-y-1 p-2">
       {threads.map((thread) => (
         <div
-          key={thread.id}
-          role="button"
-          tabIndex={0}
-          onClick={() => onSelectThread(thread)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault();
-              onSelectThread(thread);
-            }
-          }}
-          className={cn(
-            "group flex h-10 w-full cursor-pointer items-center rounded-md px-2 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            activeThreadId === thread.id
-              ? "bg-primary text-primary-foreground"
-              : "hover:bg-accent"
-          )}
-        >
-          <MessageSquare className="h-4 w-4 flex-shrink-0" />
-          <div className="ml-2 flex-1 overflow-hidden min-w-0">
-            <p className="truncate whitespace-nowrap">{thread.threadTitle}</p>
-          </div>
-          <div className="ml-2 flex-shrink-0">
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className={cn(
-                    "h-8 w-8", 
-                    activeThreadId === thread.id 
-                      ? "hover:bg-primary/80" 
-                      : "hover:bg-accent-foreground/10"
-                  )} 
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent onClick={(e) => e.stopPropagation()}>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This will permanently delete the thread "{thread.threadTitle}". This action cannot be undone.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={() => onDeleteThread(thread.id)}>
-                    Delete
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </div>
+        key={thread.id}
+        role="button"
+        tabIndex={0}
+        onClick={() => onSelectThread(thread)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onSelectThread(thread);
+          }
+        }}
+        className={cn(
+          "group flex h-10 w-full min-w-0 cursor-pointer items-center rounded-md px-2 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          activeThreadId === thread.id
+            ? "bg-primary text-primary-foreground"
+            : "hover:bg-accent"
+        )}
+      >
+        <MessageSquare className="h-4 w-4 flex-shrink-0" />
+        <div className="ml-2 flex-1 min-w-0 overflow-hidden">
+          <p className="truncate whitespace-nowrap">{thread.threadTitle}</p>
         </div>
+        <div className="ml-2 flex-shrink-0">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className={cn(
+                  "h-8 w-8", 
+                  activeThreadId === thread.id 
+                    ? "hover:bg-primary/80" 
+                    : "hover:bg-accent-foreground/10"
+                )} 
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent onClick={(e) => e.stopPropagation()}>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will permanently delete the thread "{thread.threadTitle}". This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={() => onDeleteThread(thread.id)}>
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      </div>
+      
       ))}
     </div>
   );
