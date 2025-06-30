@@ -6,36 +6,42 @@ import {
   signOut as firebaseSignOut,
   updateProfile,
 } from 'firebase/auth';
-import { auth } from './config';
+import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
+import { auth, db } from './config';
 import type { User } from '../types';
 
 async function handleUserCreation(firebaseUser: import('firebase/auth').User): Promise<User> {
-  const token = await firebaseUser.getIdToken();
-  // In a real app, you would call your backend to create/verify the user in your own database.
-  // const response = await fetch('/api/users', {
-  //   method: 'POST',
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //     'Authorization': `Bearer ${token}`
-  //   },
-  //   body: JSON.stringify({
-  //     id: firebaseUser.uid,
-  //     email: firebaseUser.email,
-  //     full_name: firebaseUser.displayName,
-  //     avatar_url: firebaseUser.photoURL
-  //   })
-  // });
-  // if (!response.ok) {
-  //   throw new Error('Failed to sync user with backend');
-  // }
-  // const backendUser = await response.json();
+  const userRef = doc(db, 'users', firebaseUser.uid);
+  const userSnap = await getDoc(userRef);
+
+  let userRecord: User;
+
+  if (!userSnap.exists()) {
+    // New user, create a document in 'users' collection
+    userRecord = {
+      uid: firebaseUser.uid,
+      email: firebaseUser.email,
+      fullName: firebaseUser.displayName,
+      avatarUrl: firebaseUser.photoURL || `https://www.gravatar.com/avatar/${firebaseUser.uid}?d=identicon`,
+    };
+    await setDoc(userRef, {
+      ...userRecord,
+      createdAt: serverTimestamp(),
+    });
+  } else {
+    // Existing user, merge data to ensure it's up to date
+    const existingData = userSnap.data();
+    userRecord = {
+        uid: firebaseUser.uid,
+        email: firebaseUser.email,
+        fullName: firebaseUser.displayName || existingData.fullName,
+        avatarUrl: firebaseUser.photoURL || existingData.avatarUrl || `https://www.gravatar.com/avatar/${firebaseUser.uid}?d=identicon`,
+    };
+    // Update the user document with potentially new info from provider
+    await setDoc(userRef, userRecord, { merge: true });
+  }
   
-  return {
-    uid: firebaseUser.uid,
-    email: firebaseUser.email,
-    fullName: firebaseUser.displayName,
-    avatarUrl: firebaseUser.photoURL,
-  };
+  return userRecord;
 }
 
 export const signInWithGoogle = async (): Promise<User> => {
@@ -53,6 +59,8 @@ export const signUpWithEmail = async (fullName: string, email: string, password:
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(userCredential.user, { displayName: fullName });
+    // Reload user to get the updated profile
+    await userCredential.user.reload();
     return await handleUserCreation(userCredential.user);
   } catch (error) {
     console.error('Error signing up:', error);

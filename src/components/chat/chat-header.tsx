@@ -13,6 +13,7 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { updateThread } from '@/lib/firebase/firestore';
 
 interface ChatHeaderProps {
   threadTitle: string;
@@ -26,13 +27,24 @@ export function ChatHeader({ threadTitle, threadId, isPublic }: ChatHeaderProps)
   const { toast } = useToast();
   const shareUrl = `${window.location.origin}/share/${threadId}`;
 
-  const handleShare = async () => {
-    // In a real app, this would be a PATCH request to your API
-    setIsPublicState(prev => !prev);
-    toast({
-      title: `Chat is now ${!isPublicState ? 'public' : 'private'}`,
-      description: !isPublicState ? 'Anyone with the link can view it.' : 'Only you can see this chat.',
-    });
+  const handleShareToggle = async () => {
+    const newPublicState = !isPublicState;
+    setIsPublicState(newPublicState); // Optimistic update
+    try {
+        await updateThread(threadId, { isPublic: newPublicState });
+        toast({
+          title: `Chat is now ${newPublicState ? 'public' : 'private'}`,
+          description: newPublicState ? 'Anyone with the link can view it.' : 'Only you can see this chat.',
+        });
+    } catch(error) {
+        console.error("Failed to update sharing status:", error);
+        setIsPublicState(!newPublicState); // Revert on error
+        toast({
+            variant: "destructive",
+            title: "Update Failed",
+            description: "Could not change the sharing status. Please try again."
+        });
+    }
   }
 
   const copyToClipboard = () => {
@@ -45,8 +57,8 @@ export function ChatHeader({ threadTitle, threadId, isPublic }: ChatHeaderProps)
 
   return (
     <div className="flex h-14 items-center justify-between border-b bg-background px-4 md:px-6">
-      <div className="flex min-w-0 items-center gap-2">
-      <h2 className="truncate text-lg font-semibold pt-1 pr-2.5 pb-1 pl-[34px]">{threadTitle}</h2>
+      <div className="min-w-0 flex-1">
+        <h2 className="truncate font-semibold">{threadTitle}</h2>
       </div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
@@ -58,7 +70,7 @@ export function ChatHeader({ threadTitle, threadId, isPublic }: ChatHeaderProps)
         <DropdownMenuContent align="end" className="w-80">
           <div className="p-2 space-y-4">
              <div className="flex items-center space-x-2">
-                <Switch id="share-switch" checked={isPublicState} onCheckedChange={handleShare} />
+                <Switch id="share-switch" checked={isPublicState} onCheckedChange={handleShareToggle} />
                 <Label htmlFor="share-switch">Share Publicly</Label>
             </div>
             {isPublicState && (

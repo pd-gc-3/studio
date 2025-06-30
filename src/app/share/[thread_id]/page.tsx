@@ -1,44 +1,52 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import { ShareChatView } from '@/components/chat/share-chat-view';
 import type { PublicThread } from '@/lib/types';
-import { BotIcon, Logo } from '@/components/icons';
+import { Logo, Spinner } from '@/components/icons';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
+import { getPublicThreadData } from '@/lib/firebase/firestore';
 
-async function getPublicThread(threadId: string): Promise<PublicThread | null> {
-  // In a real app, you would fetch this from your public API endpoint:
-  // const res = await fetch(`${process.env.API_URL}/api/v1/public/${threadId}`);
-  // if (!res.ok) return null;
-  // return res.json();
-  
-  // Mock data for demonstration
-  if (threadId === '2') {
-    return {
-      id: '2',
-      threadTitle: 'Tailwind CSS best practices',
-      createdAt: new Date().toISOString(),
-      user: {
-        fullName: 'Demo User',
-        avatarUrl: `https://www.gravatar.com/avatar/demo?d=identicon`,
-      },
-      messages: [
-        { id: 'm1', role: 'user', content: 'What are some best practices for Tailwind CSS?', createdAt: new Date().toISOString() },
-        { id: 'm2', role: 'assistant', content: 'Great question! Some best practices include: \n1. Using `@apply` sparingly. \n2. Leveraging `tailwind.config.js` for customization. \n3. Grouping classes with custom components.', createdAt: new Date().toISOString() },
-      ],
+export default function SharePage({ params }: { params: { thread_id: string } }) {
+  const [thread, setThread] = useState<PublicThread | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchThread = async () => {
+      try {
+        const publicThread = await getPublicThreadData(params.thread_id);
+        if (publicThread) {
+            setThread(publicThread);
+        } else {
+            setError('This chat is either private or does not exist.');
+        }
+      } catch (e) {
+        console.error("Error fetching shared thread:", e);
+        setError('An error occurred while fetching the chat.');
+      } finally {
+        setLoading(false);
+      }
     };
+    fetchThread();
+  }, [params.thread_id]);
+
+  if (loading) {
+      return (
+        <div className="flex h-screen w-full flex-col items-center justify-center">
+            <Spinner className="h-10 w-10 text-primary" />
+        </div>
+      )
   }
-  return null;
-}
 
-export default async function SharePage({ params }: { params: { thread_id: string } }) {
-  const thread = await getPublicThread(params.thread_id);
-
-  if (!thread) {
+  if (error || !thread) {
     return (
       <div className="flex h-screen w-full flex-col items-center justify-center text-center">
         <Logo className="h-16 w-16 text-destructive mb-4" />
-        <h1 className="font-headline text-3xl font-bold">Chat Not Found</h1>
-        <p className="text-muted-foreground">This chat is either private or does not exist.</p>
+        <h1 className="font-headline text-3xl font-bold">{error ? 'An Error Occurred' : 'Chat Not Found'}</h1>
+        <p className="text-muted-foreground">{error || 'This chat is either private or does not exist.'}</p>
       </div>
     );
   }

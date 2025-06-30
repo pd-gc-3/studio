@@ -8,9 +8,11 @@ import { ChatPanel } from '@/components/chat/chat-panel';
 import type { Thread } from '@/lib/types';
 import { Spinner } from '@/components/icons';
 import { Button } from '@/components/ui/button';
+import { getThreadsForUser, createThread, deleteThreadAndMessages } from '@/lib/firebase/firestore';
+import type { Unsubscribe } from 'firebase/firestore';
 
 export default function ChatUI() {
-  const { user, loading, token } = useAuth();
+  const { user, loading } = useAuth();
   const router = useRouter();
   const [threads, setThreads] = useState<Thread[]>([]);
   const [activeThread, setActiveThread] = useState<Thread | null>(null);
@@ -23,43 +25,51 @@ export default function ChatUI() {
   }, [user, loading, router]);
   
   useEffect(() => {
-    // Mock fetching threads
-    if(user) {
-        const mockThreads: Thread[] = [
-            { id: '1', userId: user.uid, threadTitle: 'Getting started with Next.js', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), isPublic: false, messages: [] },
-            { id: '2', userId: user.uid, threadTitle: 'Tailwind CSS best practices', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), isPublic: true, messages: [] },
-            { id: '3', userId: user.uid, threadTitle: 'Exploring AI concepts', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), isPublic: false, messages: [] },
-        ];
-        setThreads(mockThreads);
-        if(mockThreads.length > 0) {
-            setActiveThread(mockThreads[0]);
+    let unsubscribe: Unsubscribe | undefined;
+    if (user) {
+      unsubscribe = getThreadsForUser(user.uid, (fetchedThreads) => {
+        setThreads(fetchedThreads);
+        
+        // If there's no active thread, set the first one if it exists.
+        if (!activeThread && fetchedThreads.length > 0) {
+          setActiveThread(fetchedThreads[0]);
+        } 
+        // If there is an active thread, check if it still exists in the new list.
+        else if (activeThread) {
+          const activeThreadStillExists = fetchedThreads.some(t => t.id === activeThread.id);
+          // If not, select the first available thread or null if none exist.
+          if (!activeThreadStillExists) {
+            setActiveThread(fetchedThreads.length > 0 ? fetchedThreads[0] : null);
+          }
         }
+      });
     }
-  }, [user]);
-
-  const handleNewChat = () => {
-    if(!user) return;
-    const newThread: Thread = {
-      id: `new-${Date.now()}`,
-      userId: user.uid,
-      threadTitle: 'New Chat',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      isPublic: false,
-      messages: [],
+    // Cleanup subscription on unmount
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
     };
-    setThreads(prev => [newThread, ...prev]);
+  }, [user, activeThread]); // Rerun if user changes
+
+  const handleNewChat = async () => {
+    if(!user) return;
+    const newThread = await createThread(user.uid);
     setActiveThread(newThread);
-    if (!isSidebarOpen) {
-      // Don't open sidebar if it's closed
-    }
   };
   
   const handleDeleteThread = (threadId: string) => {
-    setThreads(prev => prev.filter(t => t.id !== threadId));
+    // Optimistically update the UI before the DB call completes
     if (activeThread?.id === threadId) {
-      setActiveThread(threads.length > 1 ? threads[1] : null);
+        // Find the index of the thread to be deleted
+        const index = threads.findIndex(t => t.id === threadId);
+        // Determine the next thread to be activated
+        const nextThread = threads[index + 1] || threads[index - 1] || null;
+        setActiveThread(nextThread);
     }
+    setThreads(prev => prev.filter(t => t.id !== threadId));
+    deleteThreadAndMessages(threadId);
+    // The listener will eventually sync the state, but this provides a faster user experience.
   }
 
   if (loading || !user) {
@@ -88,6 +98,7 @@ export default function ChatUI() {
             key={activeThread.id}
             thread={activeThread}
             user={user}
+            onThreadUpdate={(data) => setActiveThread(prev => prev ? {...prev, ...data} : null)}
           />
         ) : (
           <div className="flex h-full flex-col items-center justify-center p-4 text-center">

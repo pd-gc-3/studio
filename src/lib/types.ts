@@ -12,12 +12,12 @@ export interface Thread {
   createdAt: string;
   updatedAt: string;
   isPublic: boolean;
-  messages: Message[];
 }
 
 export interface Message {
   id: string;
   threadId: string;
+  userId: string;
   role: 'user' | 'assistant' | 'system';
   content: string;
   createdAt: string;
@@ -28,7 +28,7 @@ export interface PublicThread {
     id: string;
     threadTitle: string;
     createdAt: string;
-    messages: Omit<Message, 'threadId' | 'isFailed'>[];
+    messages: Omit<Message, 'threadId' | 'isFailed' | 'userId'>[];
     user: {
         fullName: string | null;
         avatarUrl: string | null;
