@@ -24,7 +24,7 @@ export type GenerateChatResponseOutput = z.infer<typeof GenerateChatResponseOutp
 
 export async function generateChatResponse(input: GenerateChatResponseInput): Promise<GenerateChatResponseOutput> {
   const llmResponse = await ai.generate({
-    model: 'googleai/gemini-2.5-flash-preview',
+    model: 'googleai/gemini-2.0-flash',
     system: "You are EchoFlow, an intelligent and helpful AI assistant. Your responses should be accurate, relevant, and concise.",
     messages: input.history.map((message) => ({
         content: [{ text: message.content }],
