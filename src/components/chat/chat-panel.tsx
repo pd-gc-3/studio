@@ -6,6 +6,7 @@ import { ChatHeader } from './chat-header';
 import { ChatMessages } from './chat-messages';
 import { ChatInput } from './chat-input';
 import { generateThreadTitle } from '@/ai/flows/generate-thread-title';
+import { generateChatResponse } from '@/ai/flows/generate-chat-response';
 import { useToast } from '@/hooks/use-toast';
 
 interface ChatPanelProps {
@@ -76,28 +77,27 @@ export function ChatPanel({ thread, user }: ChatPanelProps) {
         console.warn("Could not generate thread title:", error);
       }
     }
-
-    // Simulate API call to backend
-    await new Promise(resolve => setTimeout(resolve, 1500));
     
-    const success = Math.random() > 0.2; // 80% success rate for demo
+    try {
+      const chatHistory = updatedMessages.map(m => ({ role: m.role, content: m.content }));
+      const { response } = await generateChatResponse({ history: chatHistory });
 
-    if(success) {
-        const botMessage: Message = {
-            id: `msg-${Date.now()}-bot`,
-            threadId: currentThread.id,
-            role: 'assistant',
-            content: `This is a simulated response about "${content.substring(0, 20)}...". In a real application, this would be a response from an AI model.`,
-            createdAt: new Date().toISOString(),
-        };
-        setMessages(prev => [...prev, botMessage]);
-    } else {
-        toast({
-            variant: "destructive",
-            title: "Message failed to send",
-            description: "Please check your connection and try again.",
-        })
-        setMessages(msgs => msgs.map(m => m.id === userMessage.id ? { ...m, isFailed: true } : m));
+      const botMessage: Message = {
+        id: `msg-${Date.now()}-bot`,
+        threadId: currentThread.id,
+        role: 'assistant',
+        content: response,
+        createdAt: new Date().toISOString(),
+      };
+      setMessages(prev => [...prev, botMessage]);
+    } catch (error) {
+      console.error("Failed to get AI response:", error);
+      toast({
+          variant: "destructive",
+          title: "Message failed to send",
+          description: "Could not get a response from the AI. Please try again.",
+      });
+      setMessages(msgs => msgs.map(m => m.id === userMessage.id ? { ...m, isFailed: true } : m));
     }
 
     setIsLoading(false);
@@ -114,7 +114,7 @@ export function ChatPanel({ thread, user }: ChatPanelProps) {
         <ChatMessages messages={messages} user={user} isLoading={isLoading} onRetry={handleSendMessage} />
       </div>
       <div className="border-t bg-background">
-        <div className="mx-auto max-w-3xl p-4 ">
+        <div className="mx-auto max-w-2xl p-4 ">
           <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
         </div>
       </div>
