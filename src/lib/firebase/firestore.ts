@@ -15,6 +15,7 @@ import {
   writeBatch,
   getDoc,
   Timestamp,
+  limit,
 } from 'firebase/firestore';
 import type { Thread, Message, PublicThread, User } from '../types';
 
@@ -115,6 +116,31 @@ export const getMessagesForThread = (
         console.error("Error fetching messages:", error);
         callback([]);
     });
+};
+
+export const getMostRecentMessagesForThread = async (
+  threadId: string,
+  messageLimit: number
+): Promise<Message[]> => {
+  try {
+    const messagesCollection = collection(db, 'threads', threadId, 'messages');
+    const q = query(
+      messagesCollection,
+      orderBy('createdAt', 'desc'),
+      limit(messageLimit)
+    );
+    const querySnapshot = await getDocs(q);
+    const messages = querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      threadId,
+      ...convertTimestamps(doc.data()),
+    } as Message));
+    // Messages are fetched in descending order, so reverse them for chronological order.
+    return messages.reverse();
+  } catch (error) {
+    console.error("Error fetching most recent messages:", error);
+    return [];
+  }
 };
 
 export const addMessageToThread = async (

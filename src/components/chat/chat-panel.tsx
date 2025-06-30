@@ -13,7 +13,8 @@ import {
   addMessageToThread, 
   updateThread, 
   updateMessageContent, 
-  deleteMessagesFrom
+  deleteMessagesFrom,
+  getMostRecentMessagesForThread
 } from '@/lib/firebase/firestore';
 import type { Unsubscribe } from 'firebase/firestore';
 
@@ -64,15 +65,10 @@ export function ChatPanel({ thread, user, onThreadUpdate }: ChatPanelProps) {
     }
     
     try {
-      // The listener will update the `messages` state. We create a fresh history from it.
-      const currentMessages = await new Promise<Message[]>((resolve) => {
-        const unsubscribe = getMessagesForThread(thread.id, (msgs) => {
-            resolve(msgs);
-            unsubscribe(); // we only need the current state, not continuous updates here
-        });
-      });
+      // Fetch the last 10 messages to provide context to the AI.
+      const recentMessages = await getMostRecentMessagesForThread(thread.id, 10);
 
-      const chatHistory = currentMessages.map(m => ({ role: m.role, content: m.content }));
+      const chatHistory = recentMessages.map(m => ({ role: m.role, content: m.content }));
       const { response } = await generateChatResponse({ history: chatHistory });
 
       const botMessage: Omit<Message, 'id' | 'threadId' | 'createdAt'> = {
