@@ -145,12 +145,13 @@ export const getMostRecentMessagesForThread = async (
 
 export const addMessageToThread = async (
     threadId: string,
-    message: Omit<Message, 'id' | 'threadId' | 'createdAt'>
+    message: Omit<Message, 'id' | 'threadId' | 'createdAt' | 'isFailed'>
 ): Promise<string> => {
     const messagesCollection = collection(db, 'threads', threadId, 'messages');
     const messageRef = await addDoc(messagesCollection, {
         ...message,
         createdAt: serverTimestamp(),
+        isFailed: false,
     });
     // Also update the parent thread's `updatedAt` timestamp
     await updateDoc(doc(db, 'threads', threadId), { updatedAt: serverTimestamp() });
@@ -163,9 +164,18 @@ export const updateMessageContent = async (
     content: string
 ) => {
     const messageRef = doc(db, 'threads', threadId, 'messages', messageId);
-    await updateDoc(messageRef, { content });
+    await updateDoc(messageRef, { content, isFailed: false });
     await updateDoc(doc(db, 'threads', threadId), { updatedAt: serverTimestamp() });
 };
+
+export const setMessageFailedStatus = async (
+    threadId: string,
+    messageId: string,
+    isFailed: boolean,
+) => {
+    const messageRef = doc(db, 'threads', threadId, 'messages', messageId);
+    await updateDoc(messageRef, { isFailed });
+}
 
 export const deleteMessagesFrom = async (threadId: string, startMessageId: string) => {
     const messagesCollection = collection(db, 'threads', threadId, 'messages');
@@ -173,14 +183,14 @@ export const deleteMessagesFrom = async (threadId: string, startMessageId: strin
 
     const messagesSnapshot = await getDocs(q);
     const batch = writeBatch(db);
-    let deleteSubsequent = false;
+    let startDeleting = false;
 
     for (const doc of messagesSnapshot.docs) {
-        if (deleteSubsequent) {
+        if (startDeleting) {
             batch.delete(doc.ref);
         }
         if (doc.id === startMessageId) {
-            deleteSubsequent = true;
+            startDeleting = true; // Start deleting from the *next* message
         }
     }
 
@@ -211,8 +221,9 @@ export const getPublicThreadData = async (threadId: string): Promise<PublicThrea
                 role: data.role,
                 content: data.content,
                 createdAt: (data.createdAt as Timestamp).toDate().toISOString(),
+                isFailed: data.isFailed,
             }
-        }) as Omit<Message, 'threadId' | 'isFailed' | 'userId'>[];
+        }) as Omit<Message, 'threadId' | 'userId'>[];
 
         const userRef = doc(db, 'users', threadData.userId);
         const userSnap = await getDoc(userRef);

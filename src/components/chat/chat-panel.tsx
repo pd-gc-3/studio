@@ -14,7 +14,8 @@ import {
   updateThread, 
   updateMessageContent, 
   deleteMessagesFrom,
-  getMostRecentMessagesForThread
+  getMostRecentMessagesForThread,
+  setMessageFailedStatus,
 } from '@/lib/firebase/firestore';
 import type { Unsubscribe } from 'firebase/firestore';
 
@@ -40,58 +41,66 @@ export function ChatPanel({ thread, user, onThreadUpdate }: ChatPanelProps) {
     setIsLoading(true);
     let userMessageId: string | undefined = messageIdToReplace;
 
-    // Handle editing an existing message or sending a new one
-    if (isRetry && messageIdToReplace) {
-        await deleteMessagesFrom(thread.id, messageIdToReplace);
+    try {
+      // Step 1: Add or update the user's message in Firestore.
+      if (isRetry && messageIdToReplace) {
+        // On retry/edit, update the content and reset the failed status.
         await updateMessageContent(thread.id, messageIdToReplace, content);
-    } else {
-        const userMessage: Omit<Message, 'id' | 'threadId' | 'createdAt'> = {
-            userId: user.uid,
-            role: 'user',
-            content,
+        // Then, clear the subsequent conversation to regenerate it.
+        await deleteMessagesFrom(thread.id, messageIdToReplace);
+      } else {
+        // For a new message, just add it to the thread.
+        const userMessage: Omit<Message, 'id' | 'threadId' | 'createdAt' | 'isFailed'> = {
+          userId: user.uid,
+          role: 'user',
+          content,
         };
         userMessageId = await addMessageToThread(thread.id, userMessage);
-    }
-
-    // If it's the first message ever for this thread, generate a title
-    if (messages.length === 0 && !isRetry) {
-      try {
-        const { threadTitle } = await generateThreadTitle({ firstMessage: content });
-        await updateThread(thread.id, { threadTitle });
-        onThreadUpdate({ threadTitle });
-      } catch (error) {
-        console.warn("Could not generate thread title:", error);
       }
-    }
-    
-    try {
-      // Fetch the last 10 messages to provide context to the AI.
-      const recentMessages = await getMostRecentMessagesForThread(thread.id, 10);
 
-      const chatHistory = recentMessages.map(m => ({ role: m.role, content: m.content }));
+      // Step 2: Generate a thread title if it's the first message (fire-and-forget).
+      if (messages.length === 0 && !isRetry) {
+        generateThreadTitle({ firstMessage: content })
+          .then(({ threadTitle }) => {
+            updateThread(thread.id, { threadTitle });
+            onThreadUpdate({ threadTitle });
+          })
+          .catch(error => {
+            console.warn("Could not generate thread title:", error);
+          });
+      }
+      
+      // Step 3: Get chat history and call the AI for a response.
+      const recentMessages = await getMostRecentMessagesForThread(thread.id, 10);
+      const chatHistory = recentMessages.map(m => ({ role: m.role as 'user' | 'assistant', content: m.content }));
       const { response } = await generateChatResponse({ history: chatHistory });
 
-      const botMessage: Omit<Message, 'id' | 'threadId' | 'createdAt'> = {
+      // Step 4: Add the AI's response to the thread.
+      const botMessage: Omit<Message, 'id' | 'threadId' | 'createdAt' | 'isFailed'> = {
         userId: 'ai-assistant',
         role: 'assistant',
         content: response,
       };
       await addMessageToThread(thread.id, botMessage);
-    } catch (error) {
-      console.error("Failed to get AI response:", error);
-      toast({
-          variant: "destructive",
-          title: "Message failed to send",
-          description: "Could not get a response from the AI. Please try again.",
-      });
-      // Mark the user's message as failed in the UI
-      if (userMessageId) {
-        setMessages(msgs => msgs.map(m => m.id === userMessageId ? { ...m, isFailed: true } : m));
-      }
-    }
 
-    setIsLoading(false);
+    } catch (error) {
+      // Step 5: Handle any errors during the process.
+      console.error("Failed to send message or get AI response:", error);
+      toast({
+        variant: "destructive",
+        title: "Message failed to send",
+        description: "An error occurred. Please try again.",
+      });
+      // If we know which user message failed, mark it in the DB.
+      if (userMessageId) {
+        await setMessageFailedStatus(thread.id, userMessageId, true);
+      }
+    } finally {
+      // Step 6: Ensure the loading state is turned off.
+      setIsLoading(false);
+    }
   };
+
 
   return (
     <div className="relative flex h-full max-w-full flex-1 flex-col">

@@ -21,14 +21,14 @@ export interface Message {
   role: 'user' | 'assistant' | 'system';
   content: string;
   createdAt: string;
-  isFailed?: boolean;
+  isFailed: boolean;
 }
 
 export interface PublicThread {
     id: string;
     threadTitle: string;
     createdAt: string;
-    messages: Omit<Message, 'threadId' | 'isFailed' | 'userId'>[];
+    messages: Omit<Message, 'threadId' | 'userId'>[];
     user: {
         fullName: string | null;
         avatarUrl: string | null;

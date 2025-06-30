@@ -8,7 +8,7 @@ import { Logo } from '@/components/icons';
 import ReactMarkdown from 'react-markdown';
 
 interface ShareChatViewProps {
-  messages: Omit<Message, 'threadId' | 'isFailed'>[];
+  messages: Omit<Message, 'threadId' | 'userId'>[];
   user: {
     fullName: string | null;
     avatarUrl: string | null;
