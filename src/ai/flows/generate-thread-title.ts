@@ -41,7 +41,6 @@ const prompt = ai.definePrompt({
   First Message: {{{firstMessage}}}
 
   Title: `,
-  model: 'groq/llama-3-3-70b-8192',
 });
 
 const generateThreadTitleFlow = ai.defineFlow(
