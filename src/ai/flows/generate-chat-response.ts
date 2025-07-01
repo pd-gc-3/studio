@@ -36,7 +36,9 @@ const chatFlow = ai.defineFlow(
     const llmResponse = await ai.generate({
       model: 'googleai/gemini-2.0-flash',
       system: "You are EchoFlow, an intelligent and helpful AI assistant. Your responses should be accurate, relevant, and concise.",
-      messages: input.history.map((message) => ({
+      messages: input.history
+        .filter((message) => message.role === 'user' || message.role === 'assistant')
+        .map((message) => ({
           content: [{ text: message.content }],
           // Genkit uses 'model' for assistant role
           role: message.role === 'assistant' ? 'model' : message.role,
